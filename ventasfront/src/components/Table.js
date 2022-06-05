@@ -1,8 +1,15 @@
 import React from "react";
 
-export const Table = React.memo(({ ventas, loading }) => {
+export const Table = React.memo(({ ventas, loading, dispatch }) => {
 	console.log("Table me cargo");
 	console.log("VENTAS FINAL: ", ventas);
+
+	const handleDelete = (id) => {
+		dispatch({
+			type: "posibleDelete",
+			payload: id,
+		});
+	};
 
 	return (
 		<div className="container mb-4 border bg-white">
@@ -25,7 +32,7 @@ export const Table = React.memo(({ ventas, loading }) => {
 				<tbody>
 					{!loading ? (
 						ventas?.map((venta, i) => (
-							<tr key={venta.id}>
+							<tr key={venta.id || 0}>
 								<th>{venta.id}</th>
 								<th>{venta.idCliente}</th>
 								<th>{venta.idFactura}</th>
@@ -51,6 +58,7 @@ export const Table = React.memo(({ ventas, loading }) => {
 											className="btn btn-danger"
 											data-bs-toggle="modal"
 											data-bs-target="#deleteModal"
+											onClick={() => handleDelete(venta.id)}
 										>
 											El
 										</button>

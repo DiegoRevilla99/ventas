@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { petPost } from "../libs/petPost";
 
 export const CreateForm = React.memo(({ dispatch }) => {
@@ -36,12 +36,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			cantidadPagada: value,
 			cambio: value - form.costoTotal,
 		});
-	};
-
-	const handleChangeCambio = (event) => {
-		// const value = event.target.value;
-		console.log("ENTROOOOO");
-		//setForm({ ...form, cambio: value });
 	};
 
 	const handleChangeObservaciones = (event) => {
@@ -227,6 +221,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						type="button"
 						className="btn btn-primary"
 						onClick={handleSubmit}
+						data-bs-dismiss="modal"
 					>
 						Guardar
 					</button>

@@ -31,7 +31,11 @@ function App() {
 			<div className="mx-4">
 				<div className="row">
 					<div className="col-md-10">
-						<TableContainer ventas={ventas} loading={loading} />
+						<TableContainer
+							ventas={ventas}
+							loading={loading}
+							dispatch={dispatch}
+						/>
 					</div>
 					<div className="col-md-2">
 						<AsideContainer />
@@ -40,7 +44,12 @@ function App() {
 			</div>
 			<Modal tipo="create" nombre="createModal" dispatch={dispatch} />
 			<Modal tipo="edit" nombre="editModal" />
-			<Modal tipo="delete" nombre="deleteModal" />
+			<Modal
+				tipo="delete"
+				nombre="deleteModal"
+				dispatch={dispatch}
+				ventas={ventas}
+			/>
 		</div>
 	);
 }

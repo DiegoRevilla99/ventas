@@ -1,7 +1,4 @@
-import React from "react";
-
 export const petPost = async (url, payload, resolve, error) => {
-	let datos = null;
 	const response = await fetch(url, {
 		method: "POST",
 		headers: {

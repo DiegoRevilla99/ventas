@@ -5,23 +5,22 @@ export const getVentas = async () => {
 
 	// console.log("data: ", data);
 
-	const ventas = data.map((venta) => {
-		return {
-			id: venta.id,
-			folio: venta.folio,
-			costoTotal: venta.costoTotal,
-			cantidadPagada: venta.cantidadPagada,
-			cambio: venta.cambio,
-			observaciones: venta.observaciones,
-			fecha: venta.fecha,
-			estado: venta.estado,
-			statusDelete: venta.statusDelete,
-			idCliente: venta.idCliente,
-			idFactura: venta.idFactura,
-		};
-	});
-
-	// console.log("data: ", ventas);
-
-	return ventas;
+	if (data !== null) {
+		const ventas = data.map((venta) => {
+			return {
+				id: venta.id,
+				folio: venta.folio,
+				costoTotal: venta.costoTotal,
+				cantidadPagada: venta.cantidadPagada,
+				cambio: venta.cambio,
+				observaciones: venta.observaciones,
+				fecha: venta.fecha,
+				estado: venta.estado,
+				statusDelete: venta.statusDelete,
+				idCliente: venta.idCliente,
+				idFactura: venta.idFactura,
+			};
+		});
+		return ventas;
+	} else return [];
 };
