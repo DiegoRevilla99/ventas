@@ -38,7 +38,7 @@ function App() {
 					</div>
 				</div>
 			</div>
-			<Modal tipo="create" nombre="createModal" />
+			<Modal tipo="create" nombre="createModal" dispatch={dispatch} />
 			<Modal tipo="edit" nombre="editModal" />
 			<Modal tipo="delete" nombre="deleteModal" />
 		</div>

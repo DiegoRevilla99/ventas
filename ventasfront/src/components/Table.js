@@ -23,40 +23,56 @@ export const Table = React.memo(({ ventas, loading }) => {
 					</tr>
 				</thead>
 				<tbody>
-					{ventas?.map((venta, i) => (
-						<tr key={venta.id}>
-							<th>{venta.id}</th>
-							<th>{venta.idCliente}</th>
-							<th>{venta.idFactura}</th>
-							<th>{venta.folio}</th>
-							<th>{venta.costoTotal}</th>
-							<th>{venta.cantidadPagada}</th>
-							<th>{venta.cambio}</th>
-							<th>{venta.observaciones}</th>
-							<th>{venta.fecha}</th>
-							<th>{venta.estado}</th>
-							<th>
-								<div className="d-grid gap-2 d-md-block">
-									<button
-										type="button"
-										className="btn btn-info me-1"
-										data-bs-toggle="modal"
-										data-bs-target="#editModal"
-									>
-										Ed
-									</button>
-									<button
-										type="button"
-										className="btn btn-danger"
-										data-bs-toggle="modal"
-										data-bs-target="#deleteModal"
-									>
-										El
-									</button>
-								</div>
-							</th>
+					{!loading ? (
+						ventas?.map((venta, i) => (
+							<tr key={venta.id}>
+								<th>{venta.id}</th>
+								<th>{venta.idCliente}</th>
+								<th>{venta.idFactura}</th>
+								<th>{venta.folio}</th>
+								<th>{venta.costoTotal}</th>
+								<th>{venta.cantidadPagada}</th>
+								<th>{venta.cambio}</th>
+								<th>{venta.observaciones}</th>
+								<th>{venta.fecha}</th>
+								<th>{venta.estado}</th>
+								<th>
+									<div className="d-grid gap-2 d-md-block">
+										<button
+											type="button"
+											className="btn btn-info me-1"
+											data-bs-toggle="modal"
+											data-bs-target="#editModal"
+										>
+											Ed
+										</button>
+										<button
+											type="button"
+											className="btn btn-danger"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteModal"
+										>
+											El
+										</button>
+									</div>
+								</th>
+							</tr>
+						))
+					) : (
+						<tr className="text-center animate__animated animate__flash">
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
+							<th>Cargando...</th>
 						</tr>
-					))}
+					)}
 				</tbody>
 			</table>
 		</div>

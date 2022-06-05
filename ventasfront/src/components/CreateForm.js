@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { petPost } from "../libs/petPost";
 
-export const CreateForm = React.memo(() => {
+export const CreateForm = React.memo(({ dispatch }) => {
 	console.log("CreateForm ME CARGO");
 	const [form, setForm] = useState({
 		folio: null,
@@ -87,6 +87,22 @@ export const CreateForm = React.memo(() => {
 			.catch((err) => {
 				console.log(err);
 			});
+
+		dispatch({
+			type: "add",
+			payload: {
+				folio: form.folio,
+				costoTotal: form.costoTotal,
+				cantidadPagada: form.cantidadPagada,
+				cambio: form.cantidadPagada - form.costoTotal,
+				observaciones: form.observaciones,
+				fecha: form.fecha,
+				estado: form.estado,
+				statusDelete: form.statusDelete,
+				idCliente: form.idCliente,
+				idFactura: form.idFactura,
+			},
+		});
 	};
 	return (
 		<>

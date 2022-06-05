@@ -3,7 +3,7 @@ import { petPost } from "../libs/petPost";
 import { CreateForm } from "./CreateForm";
 import { EditForm } from "./EditForm";
 
-export const Modal = React.memo(({ tipo, nombre }) => {
+export const Modal = React.memo(({ tipo, nombre, dispatch }) => {
 	console.log("MODAL ORIGINAL ME CARGO");
 	return (
 		<div
@@ -29,7 +29,7 @@ export const Modal = React.memo(({ tipo, nombre }) => {
 					{(() => {
 						switch (tipo) {
 							case "create":
-								return <CreateForm />;
+								return <CreateForm dispatch={dispatch} />;
 
 							case "edit":
 								return <EditForm />;
