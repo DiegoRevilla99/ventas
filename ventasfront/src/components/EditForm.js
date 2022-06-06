@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { petPut } from "../libs/petPut";
 
-export const EditForm = React.memo(() => {
-	console.log("EditForm me cargo");
+export const EditForm = React.memo(({ dispatch, ventas }) => {
 	const [form, setForm] = useState({
 		folio: null,
 		costoTotal: null,
@@ -14,6 +14,15 @@ export const EditForm = React.memo(() => {
 		idCliente: null,
 		idFactura: null,
 	});
+
+	useEffect(() => {
+		const nuevoEstado = Object.assign(
+			{},
+			ventas.find((venta) => venta.posibleEdit == true)
+		);
+		setForm(nuevoEstado);
+	}, [ventas]);
+
 	const handleChangeFolio = (event) => {
 		const value = event.target.value;
 		setForm({ ...form, folio: value });
@@ -37,12 +46,6 @@ export const EditForm = React.memo(() => {
 		});
 	};
 
-	const handleChangeCambio = (event) => {
-		// const value = event.target.value;
-		console.log("ENTROOOOO");
-		//setForm({ ...form, cambio: value });
-	};
-
 	const handleChangeObservaciones = (event) => {
 		const value = event.target.value;
 		setForm({ ...form, observaciones: value });
@@ -63,29 +66,48 @@ export const EditForm = React.memo(() => {
 		setForm({ ...form, idCliente: value });
 	};
 
+	const handleCancelar = () => {
+		dispatch({
+			type: "cancelEdit",
+		});
+	};
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		// const resp = petPost("https://ventas-it-d.herokuapp.com/api/venta", {
-		// 	folio: form.folio,
-		// 	costoTotal: form.costoTotal,
-		// 	cantidadPagada: form.cantidadPagada,
-		// 	cambio: form.cantidadPagada - form.costoTotal,
-		// 	observaciones: form.observaciones,
-		// 	fecha: form.fecha,
-		// 	estado: form.estado,
-		// 	statusDelete: form.statusDelete,
-		// 	idCliente: form.idCliente,
-		// 	idFactura: form.idFactura,
-		// });
+		const resp = petPut(
+			"https://ventas-it-d.herokuapp.com/api/venta/" + form.folio,
+			{
+				folio: form.folio,
+				costoTotal: form.costoTotal,
+				cantidadPagada: form.cantidadPagada,
+				cambio: form.cantidadPagada - form.costoTotal,
+				observaciones: form.observaciones,
+				fecha: form.fecha,
+				estado: form.estado,
+				statusDelete: form.statusDelete,
+				idCliente: form.idCliente,
+				idFactura: form.idFactura,
+			}
+		);
 
-		// resp
-		// 	.then((data) => {
-		// 		console.log(data);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
+		console.log("FINAL: ", form);
+
+		dispatch({
+			type: "edit",
+			payload: {
+				folio: form.folio,
+				costoTotal: form.costoTotal,
+				cantidadPagada: form.cantidadPagada,
+				cambio: form.cantidadPagada - form.costoTotal,
+				observaciones: form.observaciones,
+				fecha: form.fecha,
+				estado: form.estado,
+				statusDelete: form.statusDelete,
+				idCliente: form.idCliente,
+				idFactura: form.idFactura,
+			},
+		});
 	};
 
 	return (
@@ -96,13 +118,16 @@ export const EditForm = React.memo(() => {
 						<label htmlFor="folio" className="form-label">
 							Folio:
 						</label>
-						<input
-							type="text"
-							className="form-control"
-							id="folio"
-							aria-describedby="Folio..."
-							onChange={handleChangeFolio}
-						></input>
+						<fieldset disabled>
+							<input
+								type="text"
+								className="form-control"
+								id="folio"
+								aria-describedby="Folio..."
+								defaultValue={form.folio}
+								onChange={handleChangeFolio}
+							></input>
+						</fieldset>
 					</div>
 
 					<div className="mb-3">
@@ -113,6 +138,7 @@ export const EditForm = React.memo(() => {
 							type="number"
 							className="form-control"
 							id="total"
+							defaultValue={form.costoTotal}
 							onChange={handleChangeCostoTotal}
 						></input>
 					</div>
@@ -125,6 +151,7 @@ export const EditForm = React.memo(() => {
 							type="number"
 							className="form-control"
 							id="cantidadPagada"
+							defaultValue={form.cantidadPagada}
 							onChange={handleChangeCantidadPagada}
 						></input>
 					</div>
@@ -141,7 +168,7 @@ export const EditForm = React.memo(() => {
 								placeholder={form.cambio}
 								aria-describedby="error"
 							></input>
-							{form.cambio < 0 && (
+							{(form?.cambio || 0) < 0 && (
 								<div id="error" className="form-text">
 									*El cambio no puede ser negativo*
 								</div>
@@ -157,6 +184,7 @@ export const EditForm = React.memo(() => {
 							type="text"
 							className="form-control"
 							id="observaciones"
+							defaultValue={form.observaciones}
 							onChange={handleChangeObservaciones}
 						></input>
 					</div>
@@ -169,6 +197,7 @@ export const EditForm = React.memo(() => {
 							type="date"
 							className="form-control"
 							id="fecha"
+							defaultValue={form.fecha}
 							onChange={handleChangeFecha}
 						></input>
 					</div>
@@ -181,6 +210,7 @@ export const EditForm = React.memo(() => {
 							type="text"
 							className="form-control"
 							id="estado"
+							defaultValue={form.estado}
 							onChange={handleChangeEstado}
 						></input>
 					</div>
@@ -193,6 +223,7 @@ export const EditForm = React.memo(() => {
 							type="number"
 							className="form-control"
 							id="idCliente"
+							defaultValue={form.idCliente}
 							onChange={handleChangeIdCliente}
 						></input>
 					</div>
@@ -203,14 +234,16 @@ export const EditForm = React.memo(() => {
 					type="button"
 					className="btn btn-secondary"
 					data-bs-dismiss="modal"
+					onClick={handleCancelar}
 				>
 					Cancelar
 				</button>
-				{form.cambio >= 0 ? (
+				{form?.cambio >= 0 ? (
 					<button
 						type="button"
 						className="btn btn-primary"
 						onClick={handleSubmit}
+						data-bs-dismiss="modal"
 					>
 						Guardar
 					</button>

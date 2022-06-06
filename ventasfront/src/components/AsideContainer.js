@@ -5,7 +5,6 @@ import { Categorias } from "./Categorias";
 import { Status } from "./Status";
 
 export const AsideContainer = React.memo(() => {
-	console.log("AsideContainer ME CARGO");
 	return (
 		<div className="container border mt-2 bg-white">
 			<div className="mt-4 mb-4 d-grid mx-auto">

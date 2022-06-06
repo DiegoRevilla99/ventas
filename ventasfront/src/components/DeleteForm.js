@@ -9,7 +9,7 @@ export const DeleteForm = React.memo(({ dispatch, ventas }) => {
 
 	const handleCancelar = () => {
 		dispatch({
-			type: "deletePosible",
+			type: "cancelDelete",
 		});
 	};
 

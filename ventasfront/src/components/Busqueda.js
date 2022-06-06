@@ -1,7 +1,6 @@
 import React from "react";
 
 export const Busqueda = () => {
-	console.log("Busqueda me cargo");
 	return (
 		<>
 			<div className="mb-3">

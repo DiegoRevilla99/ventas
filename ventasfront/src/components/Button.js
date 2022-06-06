@@ -1,7 +1,6 @@
 import React from "react";
 
 export const Button = () => {
-	console.log("Button me cargo");
 	return (
 		<>
 			<button

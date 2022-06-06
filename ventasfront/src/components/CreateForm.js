@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { petPost } from "../libs/petPost";
 
 export const CreateForm = React.memo(({ dispatch }) => {
-	console.log("CreateForm ME CARGO");
 	const [form, setForm] = useState({
 		folio: null,
 		costoTotal: null,
@@ -76,10 +75,10 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 		resp
 			.then((data) => {
-				console.log(data);
+				// console.log(data);
 			})
 			.catch((err) => {
-				console.log(err);
+				// console.log(err);
 			});
 
 		dispatch({

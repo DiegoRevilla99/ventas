@@ -1,13 +1,17 @@
 import React from "react";
 
 export const Table = React.memo(({ ventas, loading, dispatch }) => {
-	console.log("Table me cargo");
-	console.log("VENTAS FINAL: ", ventas);
-
 	const handleDelete = (id) => {
 		dispatch({
 			type: "posibleDelete",
 			payload: id,
+		});
+	};
+
+	const handleEdit = (folio) => {
+		dispatch({
+			type: "posibleEdit",
+			payload: folio,
 		});
 	};
 
@@ -50,6 +54,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 											className="btn btn-info me-1"
 											data-bs-toggle="modal"
 											data-bs-target="#editModal"
+											onClick={() => handleEdit(venta.folio)}
 										>
 											Ed
 										</button>

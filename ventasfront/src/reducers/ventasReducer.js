@@ -10,6 +10,35 @@ export const ventasReducer = (state = [], action) => {
 				return venta;
 			});
 
+		case "edit":
+			return state.map((venta) => {
+				if (venta.folio == action.payload.folio) {
+					return action.payload;
+				}
+				return venta;
+			});
+
+		case "posibleEdit":
+			const ventasEdit = state.map((venta) => {
+				if (venta.folio === action.payload) {
+					return { ...venta, posibleEdit: true };
+				} else return venta;
+			});
+			console.log("ReducerVentasEdit: ", ventasEdit);
+
+			return ventasEdit;
+
+		case "cancelEdit":
+			const ventasCancelEdit = state.map((venta) => {
+				if (venta.posibleEdit === true) {
+					delete venta.posibleEdit;
+					return venta;
+				} else return venta;
+			});
+			console.log("ReducerVentasEDIT BORRADO: ", ventasCancelEdit);
+
+			return ventasCancelEdit;
+
 		case "delete":
 			let eliminado = {};
 			const nuevo = state.filter((venta) => {
@@ -35,7 +64,7 @@ export const ventasReducer = (state = [], action) => {
 
 			return ventas;
 
-		case "deletePosible":
+		case "cancelDelete":
 			const ventas1 = state.map((venta) => {
 				if (venta.posibleDelete === true) {
 					delete venta.posibleDelete;

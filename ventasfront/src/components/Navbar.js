@@ -1,7 +1,6 @@
 import React from "react";
 
 export const Navbar = React.memo(({ title, page1, page2 }) => {
-	console.log("Nav me cargo");
 	return (
 		<nav
 			className="navbar navbar-expand-lg navbar-light bg-gradient shadow bg-white p-3 mb-5 rounded"

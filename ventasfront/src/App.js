@@ -23,8 +23,6 @@ function App() {
 		}
 	}, [loading]);
 
-	console.log("Ventas: ", ventas);
-
 	return (
 		<div className="App">
 			<Navbar title={"Modulo de ventas"} page1={"Detalles"} />
@@ -42,13 +40,25 @@ function App() {
 					</div>
 				</div>
 			</div>
-			<Modal tipo="create" nombre="createModal" dispatch={dispatch} />
-			<Modal tipo="edit" nombre="editModal" />
+			<Modal
+				tipo="create"
+				nombre="createModal"
+				dispatch={dispatch}
+				title="Crear venta"
+			/>
+			<Modal
+				tipo="edit"
+				nombre="editModal"
+				title="Editar venta"
+				dispatch={dispatch}
+				ventas={ventas}
+			/>
 			<Modal
 				tipo="delete"
 				nombre="deleteModal"
 				dispatch={dispatch}
 				ventas={ventas}
+				title="Eliminar venta"
 			/>
 		</div>
 	);

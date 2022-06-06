@@ -3,8 +3,7 @@ import { CreateForm } from "./CreateForm";
 import { DeleteForm } from "./DeleteForm";
 import { EditForm } from "./EditForm";
 
-export const Modal = React.memo(({ tipo, nombre, dispatch, ventas }) => {
-	console.log("MODAL ORIGINAL ME CARGO");
+export const Modal = React.memo(({ tipo, nombre, dispatch, ventas, title }) => {
 	return (
 		<div
 			className="modal fade"
@@ -17,7 +16,7 @@ export const Modal = React.memo(({ tipo, nombre, dispatch, ventas }) => {
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title" id="exampleModalLabel">
-							Agregar venta
+							{title}
 						</h5>
 						<button
 							type="button"
@@ -32,7 +31,7 @@ export const Modal = React.memo(({ tipo, nombre, dispatch, ventas }) => {
 								return <CreateForm dispatch={dispatch} />;
 
 							case "edit":
-								return <EditForm />;
+								return <EditForm dispatch={dispatch} ventas={ventas} />;
 
 							case "delete":
 								return <DeleteForm dispatch={dispatch} ventas={ventas} />;
