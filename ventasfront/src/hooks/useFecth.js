@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
-import { getVentas } from "../libs/getVentas";
+// import { getVentas } from "../libs/getVentas";
 
-export const useFetchVentas = () => {
+export const useFetch = (get) => {
 	const [state, setState] = useState({
 		data: [],
 		loading: true,
 	});
 
 	useEffect(() => {
-		getVentas().then((ventas) => {
+		get().then((ventas) => {
 			setState({
 				data: ventas,
 				loading: false,
 			});
 		});
 	}, []);
-
-	// console.log("state", state);
-
 	return state;
 };

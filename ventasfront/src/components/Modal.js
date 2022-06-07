@@ -11,19 +11,25 @@ export const Modal = React.memo(({ tipo, nombre, dispatch, ventas, title }) => {
 			tabIndex="-1"
 			aria-labelledby="exampleModalLabel"
 			aria-hidden="true"
+			data-bs-backdrop="static"
+			data-bs-keyboard="false"
 		>
-			<div className="modal-dialog modal-dialog-centered">
+			<div
+				className={`modal-dialog modal-dialog-centered ${
+					nombre == "createModal" ? "modal-xl" : ""
+				}`}
+			>
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title" id="exampleModalLabel">
 							{title}
 						</h5>
-						<button
+						{/* <button
 							type="button"
 							className="btn-close"
 							data-bs-dismiss="modal"
 							aria-label="Close"
-						></button>
+						></button> */}
 					</div>
 					{(() => {
 						switch (tipo) {

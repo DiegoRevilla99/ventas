@@ -3,7 +3,8 @@ import { AsideContainer } from "./components/AsideContainer";
 import { Modal } from "./components/Modal";
 import { Navbar } from "./components/Navbar";
 import { TableContainer } from "./components/TableContainer";
-import { useFetchVentas } from "./hooks/useFecthVentas";
+import { useFetch } from "./hooks/useFecth";
+import { getVentas } from "./libs/getVentas";
 import { ventasReducer } from "./reducers/ventasReducer";
 
 const init = () => {
@@ -12,7 +13,7 @@ const init = () => {
 
 function App() {
 	const [ventas, dispatch] = useReducer(ventasReducer, [], init);
-	const { data, loading } = useFetchVentas();
+	const { data, loading } = useFetch(getVentas);
 
 	useEffect(() => {
 		if (!loading) {

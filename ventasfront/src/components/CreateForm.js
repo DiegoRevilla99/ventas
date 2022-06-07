@@ -1,19 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { petPost } from "../libs/petPost";
+import { getProductos } from "../libs/getProductos";
+import { useFetch } from "../hooks/useFecth";
+
+import { Modal } from "./Modal";
+import { productosReducer } from "../reducers/productosReducer";
+
+const init = () => {
+	return [];
+};
 
 export const CreateForm = React.memo(({ dispatch }) => {
+	const { data: productos, loading } = useFetch(getProductos);
+	// const productos = [];
 	const [form, setForm] = useState({
-		folio: null,
-		costoTotal: null,
-		cantidadPagada: null,
+		folio: " ",
+		costoTotal: 0,
+		cantidadPagada: 0,
 		cambio: 0,
 		observaciones: "",
-		fecha: null,
-		estado: null,
+		fecha: " ",
+		estado: " ",
 		statusDelete: false,
-		idCliente: null,
-		idFactura: null,
+		idCliente: 0,
+		idFactura: 0,
 	});
+	// console.log("PRODUCTOS: ", data);
+
 	const handleChangeFolio = (event) => {
 		const value = event.target.value;
 		setForm({ ...form, folio: value });
@@ -96,11 +109,188 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				idFactura: form.idFactura,
 			},
 		});
+
+		handleCancelar();
 	};
+
+	//TODO LO QUE TIENE QUE VER CON PRODUCTOS
+
+	const [stateProductos, dispatchProductos] = useReducer(
+		productosReducer,
+		[],
+		init
+	);
+
+	useEffect(() => {
+		if (!loading) {
+			dispatchProductos({
+				type: "addAll",
+				payload: productos,
+			});
+		}
+	}, [loading]);
+
+	useEffect(() => {
+		let suma = 0;
+		const seleccionados = stateProductos.filter(
+			(producto) => producto.seleccionado == true
+		);
+		console.log("SELECCIONADOS: ", seleccionados);
+
+		let costoTotal = 0;
+		seleccionados.map((seleccionado) => {
+			costoTotal = costoTotal + seleccionado.precioVenta;
+		});
+		console.log("PrecioTotal: ", costoTotal);
+
+		setForm({
+			...form,
+			costoTotal: costoTotal,
+			cambio: form.cantidadPagada - costoTotal,
+		});
+	}, [stateProductos]);
+
+	const handleAdd = (producto) => {
+		dispatchProductos({
+			type: "add",
+			payload: { ...producto, seleccionado: true },
+		});
+	};
+
+	const handleCancelarUno = (idProducto) => {
+		console.log("ID: ", idProducto);
+		dispatchProductos({
+			type: "cancelarUno",
+			payload: idProducto,
+		});
+	};
+
+	const handleCancelar = () => {
+		dispatchProductos({ type: "cancelar", payload: productos });
+		setForm({
+			folio: " ",
+			costoTotal: 0,
+			cantidadPagada: 0,
+			cambio: 0,
+			observaciones: "",
+			fecha: " ",
+			estado: " ",
+			statusDelete: false,
+			idCliente: 0,
+			idFactura: 0,
+		});
+	};
+
+	const estadoo = () => {
+		console.log(stateProductos);
+
+		const response = fetch(
+			"https://ventas-it-d.herokuapp.com/api/venta/1000/ventadetalle",
+			{
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					idVenta: 1000,
+					cantidadProducto: 20,
+					costoUnitario: 20,
+					costoTotal: 400,
+					estatusDelete: true,
+					idProducto: 3,
+				}),
+			}
+		);
+		const responseJSON = response.json();
+	};
+
 	return (
 		<>
-			<div className="modal-body">
-				<form>
+			<div className="modal-body row">
+				<div className="col-md-8 border" style={{ height: "auto" }}>
+					<button onClick={estadoo}></button>
+					<div className="row">
+						<div className="col-12 h-50">
+							<table className="table">
+								<thead>
+									<tr>
+										<th scope="col">id</th>
+										<th scope="col">Marca</th>
+										<th scope="col">Modelo</th>
+										<th scope="col">Talla</th>
+										<th scope="col">Precio</th>
+										<th scope="col">Stock</th>
+									</tr>
+								</thead>
+								<tbody>
+									{stateProductos?.map((producto) =>
+										producto.seleccionado == true ? null : (
+											<tr key={producto.idProducto || 0}>
+												<th>{producto.idProducto}</th>
+												<th>{producto.marca}</th>
+												<th>{producto.modelo}</th>
+												<th>{producto.talla}</th>
+												<th>{producto.precioVenta}</th>
+												<th>{producto.stock}</th>
+												<th>
+													<button
+														type="button"
+														className="btn btn-info me-1"
+														onClick={() => handleAdd(producto)}
+													>
+														+
+													</button>
+												</th>
+											</tr>
+										)
+									)}
+								</tbody>
+							</table>
+						</div>
+
+						<div className="col-12 h-50 mt-4">
+							<table className="table">
+								<thead>
+									<tr>
+										<th scope="col">id</th>
+										<th scope="col">Marca</th>
+										<th scope="col">Modelo</th>
+										<th scope="col">Talla</th>
+										<th scope="col">Precio</th>
+										<th scope="col">Stock</th>
+									</tr>
+								</thead>
+								<tbody>
+									{stateProductos?.map((producto) =>
+										producto.seleccionado == true ? (
+											<tr key={producto.idProducto || 0}>
+												<th>{producto.idProducto}</th>
+												<th>{producto.marca}</th>
+												<th>{producto.modelo}</th>
+												<th>{producto.talla}</th>
+												<th>{producto.precioVenta}</th>
+												<th>{producto.stock}</th>
+												<th>
+													<button
+														type="button"
+														className="btn btn-danger me-1"
+														onClick={() =>
+															handleCancelarUno(producto.idProducto)
+														}
+													>
+														-
+													</button>
+												</th>
+											</tr>
+										) : null
+									)}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<form className="col-md-4">
 					<div className="mb-3">
 						<label htmlFor="folio" className="form-label">
 							Folio:
@@ -109,6 +299,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="text"
 							className="form-control"
 							id="folio"
+							value={form.folio}
 							aria-describedby="Folio..."
 							onChange={handleChangeFolio}
 						></input>
@@ -118,12 +309,15 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						<label htmlFor="total" className="form-label">
 							Total:
 						</label>
-						<input
-							type="number"
-							className="form-control"
-							id="total"
-							onChange={handleChangeCostoTotal}
-						></input>
+						<fieldset disabled>
+							<input
+								type="number"
+								className="form-control"
+								id="total"
+								value={form.costoTotal}
+								onChange={handleChangeCostoTotal}
+							></input>
+						</fieldset>
 					</div>
 
 					<div className="mb-3">
@@ -134,6 +328,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="number"
 							className="form-control"
 							id="cantidadPagada"
+							value={form.cantidadPagada}
 							onChange={handleChangeCantidadPagada}
 						></input>
 					</div>
@@ -166,6 +361,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="text"
 							className="form-control"
 							id="observaciones"
+							value={form.observaciones}
 							onChange={handleChangeObservaciones}
 						></input>
 					</div>
@@ -178,6 +374,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="date"
 							className="form-control"
 							id="fecha"
+							value={form.fecha}
 							onChange={handleChangeFecha}
 						></input>
 					</div>
@@ -190,6 +387,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="text"
 							className="form-control"
 							id="estado"
+							value={form.estado}
 							onChange={handleChangeEstado}
 						></input>
 					</div>
@@ -202,6 +400,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							type="number"
 							className="form-control"
 							id="idCliente"
+							value={form.idCliente}
 							onChange={handleChangeIdCliente}
 						></input>
 					</div>
@@ -212,6 +411,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					type="button"
 					className="btn btn-secondary"
 					data-bs-dismiss="modal"
+					onClick={handleCancelar}
 				>
 					Cancelar
 				</button>
@@ -230,6 +430,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					</button>
 				)}
 			</div>
+
+			<Modal tipo="delete" nombre="pruebaModal" title="Eliminar venta" />
 		</>
 	);
 });
