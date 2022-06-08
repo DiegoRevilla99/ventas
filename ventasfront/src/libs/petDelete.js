@@ -6,5 +6,5 @@ export const petDelete = (url) => {
 			"Access-Control-Allow-Origin": "http://127.0.0.1:3000",
 		},
 		method: "DELETE",
-	}).then((data) => console.log("PET POST: ", data));
+	}).then((data) => console.log("PET DELETE : ", data));
 };

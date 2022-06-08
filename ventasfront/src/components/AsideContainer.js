@@ -12,7 +12,6 @@ export const AsideContainer = React.memo(() => {
 			</div>
 
 			<hr></hr>
-
 			<div className="mt-4 mb-4 d-grid mx-auto text-start">
 				<Categorias />
 			</div>

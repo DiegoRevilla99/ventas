@@ -19,7 +19,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		cantidadPagada: 0,
 		cambio: 0,
 		observaciones: "",
-		fecha: " ",
+		fecha: "",
 		estado: " ",
 		statusDelete: false,
 		idCliente: 0,
@@ -86,29 +86,33 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			idFactura: form.idFactura,
 		});
 
+		// let id = 0;
 		resp
 			.then((data) => {
-				// console.log(data);
+				const id = data.data;
+				console.log("RESPUESTA: ", data);
+				dispatch({
+					type: "add",
+					payload: {
+						id: id,
+						folio: form.folio,
+						costoTotal: form.costoTotal,
+						cantidadPagada: form.cantidadPagada,
+						cambio: form.cantidadPagada - form.costoTotal,
+						observaciones: form.observaciones,
+						fecha: form.fecha,
+						estado: form.estado,
+						statusDelete: form.statusDelete,
+						idCliente: form.idCliente,
+						idFactura: form.idFactura,
+					},
+				});
 			})
 			.catch((err) => {
 				// console.log(err);
 			});
 
-		dispatch({
-			type: "add",
-			payload: {
-				folio: form.folio,
-				costoTotal: form.costoTotal,
-				cantidadPagada: form.cantidadPagada,
-				cambio: form.cantidadPagada - form.costoTotal,
-				observaciones: form.observaciones,
-				fecha: form.fecha,
-				estado: form.estado,
-				statusDelete: form.statusDelete,
-				idCliente: form.idCliente,
-				idFactura: form.idFactura,
-			},
-		});
+		// const detalles = ("url", )
 
 		handleCancelar();
 	};
@@ -212,7 +216,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					<button onClick={estadoo}></button>
 					<div className="row">
 						<div className="col-12 h-50">
-							<table className="table">
+							<h3>Productos</h3>
+							<table className="table border">
 								<thead>
 									<tr>
 										<th scope="col">id</th>
@@ -250,7 +255,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						</div>
 
 						<div className="col-12 h-50 mt-4">
-							<table className="table">
+							<h3>Carrito</h3>
+							<table className="table border">
 								<thead>
 									<tr>
 										<th scope="col">id</th>

@@ -14,6 +14,7 @@ const init = () => {
 function App() {
 	const [ventas, dispatch] = useReducer(ventasReducer, [], init);
 	const { data, loading } = useFetch(getVentas);
+	console.log(ventas);
 
 	useEffect(() => {
 		if (!loading) {

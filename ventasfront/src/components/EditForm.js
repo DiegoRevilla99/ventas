@@ -76,8 +76,9 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		event.preventDefault();
 
 		const resp = petPut(
-			"https://ventas-it-d.herokuapp.com/api/venta/" + form.folio,
+			"https://ventas-it-d.herokuapp.com/api/venta/" + form.id,
 			{
+				id: form.id,
 				folio: form.folio,
 				costoTotal: form.costoTotal,
 				cantidadPagada: form.cantidadPagada,
@@ -96,6 +97,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		dispatch({
 			type: "edit",
 			payload: {
+				id: form.id,
 				folio: form.folio,
 				costoTotal: form.costoTotal,
 				cantidadPagada: form.cantidadPagada,
