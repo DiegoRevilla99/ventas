@@ -16,7 +16,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 	};
 
 	return (
-		<div className="container mb-4 border bg-white">
+		<div className="container mb-4 border bg-white table-responsive">
 			<table className="table">
 				<thead>
 					<tr>
@@ -56,7 +56,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 											data-bs-target="#editModal"
 											onClick={() => handleEdit(venta.folio)}
 										>
-											Ed
+											<i className="small material-icons">edit</i>
 										</button>
 										<button
 											type="button"
@@ -65,7 +65,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 											data-bs-target="#deleteModal"
 											onClick={() => handleDelete(venta.id)}
 										>
-											El
+											<i className="small material-icons">delete</i>
 										</button>
 									</div>
 								</th>

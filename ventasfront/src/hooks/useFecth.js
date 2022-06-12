@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { getVentas } from "../libs/getVentas";
 
 export const useFetch = (get) => {
 	const [state, setState] = useState({

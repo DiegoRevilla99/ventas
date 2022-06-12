@@ -10,9 +10,14 @@ const init = () => {
 	return [];
 };
 
+let styles = {
+	fontWeight: "bold",
+	color: "red"
+}
+
 export const CreateForm = React.memo(({ dispatch }) => {
 	const { data: productos, loading } = useFetch(getProductos);
-	// const productos = [];
+	const [errors, setErrors] = useState({});
 	const [form, setForm] = useState({
 		folio: " ",
 		costoTotal: 0,
@@ -25,11 +30,30 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		idCliente: 0,
 		idFactura: 0,
 	});
-	// console.log("PRODUCTOS: ", data);
 
-	const handleChangeFolio = (event) => {
-		const value = event.target.value;
-		setForm({ ...form, folio: value });
+	const validationsForm = (form) => {
+		let errors = {};
+		if (!form.folio.trim()) {
+			errors.folio = "*El campo folio es obligatorio";
+		}
+		if (form.cantidadPagada == 0) {
+			errors.cantidadPagada = "*El campo cantidad es obligatorio";
+		}
+		if (form.cambio < 0) {
+			errors.cambio = "*El cambio no puede ser negativo";
+		}
+
+		return errors;
+	}
+
+	const handleChange = (event) => {
+		const { id, value } = event.target;
+		setForm({ ...form, [id]: value });
+	};
+
+	const handleBlur = (event) => {
+		handleChange(event);
+		setErrors(validationsForm(form));
 	};
 
 	const handleChangeCostoTotal = (event) => {
@@ -50,26 +74,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		});
 	};
 
-	const handleChangeObservaciones = (event) => {
-		const value = event.target.value;
-		setForm({ ...form, observaciones: value });
-	};
-
-	const handleChangeFecha = (event) => {
-		const value = event.target.value;
-		setForm({ ...form, fecha: value });
-	};
-
-	const handleChangeEstado = (event) => {
-		const value = event.target.value;
-		setForm({ ...form, estado: value });
-	};
-
-	const handleChangeIdCliente = (event) => {
-		const value = event.target.value;
-		setForm({ ...form, idCliente: value });
-	};
-
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
@@ -86,7 +90,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			idFactura: form.idFactura,
 		});
 
-		// let id = 0;
 		resp
 			.then((data) => {
 				const id = data.data;
@@ -111,9 +114,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			.catch((err) => {
 				// console.log(err);
 			});
-
-		// const detalles = ("url", )
-
 		handleCancelar();
 	};
 
@@ -215,7 +215,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				<div className="col-md-8 border" style={{ height: "auto" }}>
 					<button onClick={estadoo}></button>
 					<div className="row">
-						<div className="col-12 h-50">
+						<div className="col-12 h-50 table-responsive">
 							<h3>Productos</h3>
 							<table className="table border">
 								<thead>
@@ -254,7 +254,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							</table>
 						</div>
 
-						<div className="col-12 h-50 mt-4">
+						<div className="col-12 h-50 mt-4 table-responsive">
 							<h3>Carrito</h3>
 							<table className="table border">
 								<thead>
@@ -307,8 +307,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							id="folio"
 							value={form.folio}
 							aria-describedby="Folio..."
-							onChange={handleChangeFolio}
+							onBlur={handleBlur}
+							onChange={handleChange}
 						></input>
+						{errors.folio && (
+							<div className="form-text" style={styles}>
+								{errors.folio}
+							</div>
+						)}
 					</div>
 
 					<div className="mb-3">
@@ -319,7 +325,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							<input
 								type="number"
 								className="form-control"
-								id="total"
+								id="costoTotal"
 								value={form.costoTotal}
 								onChange={handleChangeCostoTotal}
 							></input>
@@ -335,8 +341,13 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="cantidadPagada"
 							value={form.cantidadPagada}
+							onBlur={handleBlur}
 							onChange={handleChangeCantidadPagada}
 						></input>
+						{errors.cantidadPagada && (
+							<div className="form-text" style={styles}>
+								{errors.cantidadPagada}
+							</div>)}
 					</div>
 
 					<div className="mb-3">
@@ -351,9 +362,9 @@ export const CreateForm = React.memo(({ dispatch }) => {
 								placeholder={form.cambio}
 								aria-describedby="error"
 							></input>
-							{form.cambio < 0 && (
-								<div id="error" className="form-text">
-									*El cambio no puede ser negativo*
+							{errors.cambio && (
+								<div className="form-text" style={styles}>
+									{errors.cambio}
 								</div>
 							)}
 						</fieldset>
@@ -368,7 +379,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="observaciones"
 							value={form.observaciones}
-							onChange={handleChangeObservaciones}
+							onChange={handleChange}
 						></input>
 					</div>
 
@@ -381,7 +392,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="fecha"
 							value={form.fecha}
-							onChange={handleChangeFecha}
+							onChange={handleChange}
 						></input>
 					</div>
 
@@ -394,7 +405,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="estado"
 							value={form.estado}
-							onChange={handleChangeEstado}
+							onChange={handleChange}
 						></input>
 					</div>
 
@@ -407,7 +418,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="idCliente"
 							value={form.idCliente}
-							onChange={handleChangeIdCliente}
+							onChange={handleChange}
 						></input>
 					</div>
 				</form>
@@ -436,7 +447,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					</button>
 				)}
 			</div>
-
 			<Modal tipo="delete" nombre="pruebaModal" title="Eliminar venta" />
 		</>
 	);
