@@ -215,7 +215,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				<div className="col-md-8 border" style={{ height: "auto" }}>
 					<button onClick={estadoo}></button>
 					<div className="row">
-						<div className="col-12 h-50">
+						<div className="col-12 h-50 table-responsive">
 							<h3>Productos</h3>
 							<table className="table border">
 								<thead>
@@ -254,7 +254,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							</table>
 						</div>
 
-						<div className="col-12 h-50 mt-4">
+						<div className="col-12 h-50 mt-4 table-responsive">
 							<h3>Carrito</h3>
 							<table className="table border">
 								<thead>

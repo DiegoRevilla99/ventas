@@ -16,7 +16,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 	};
 
 	return (
-		<div className="container mb-4 border bg-white">
+		<div className="container mb-4 border bg-white table-responsive">
 			<table className="table">
 				<thead>
 					<tr>
