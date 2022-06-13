@@ -62,7 +62,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		cambio: 0,
 		observaciones: "",
 		fecha: "",
-		estado: " ",
+		estado: "APROBADO",
 		statusDelete: false,
 		idCliente: 0,
 		idFactura: 0,
@@ -168,7 +168,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					if (producto.seleccionado == true) {
 						console.log("VENTA DE ", producto);
 						const resp = petPut(
-							"https://compras-develop.herokuapp.com/api/compras/vender/" +
+							"https://compras-testing.herokuapp.com/api/compras/vender/" +
 								producto.idProducto +
 								"/" +
 								producto.cantidadVendidos,
@@ -224,13 +224,13 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	);
 
 	useEffect(() => {
-		//ACTIVAAAAAAAAAAAAAAAAAAAAAAAAR
-		// if (!loading) {
-		// 	dispatchProductos({
-		// 		type: "addAll",
-		// 		payload: productos,
-		// 	});
-		// }
+		// ACTIVAAAAAAAAAAAAAAAAAAAAAAAAR
+		if (!loading) {
+			dispatchProductos({
+				type: "addAll",
+				payload: productos,
+			});
+		}
 	}, [loading]);
 
 	useEffect(() => {
@@ -273,7 +273,10 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		console.log("Target", event.target.dataset.id);
 		dispatchProductos({
 			type: "cantidadVendidos",
-			payload: { id: event.target.dataset.id, cantidad: event.target.value },
+			payload: {
+				id: event.target.dataset.id,
+				cantidad: event.target.value,
+			},
 		});
 	};
 
@@ -301,6 +304,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		// );
 
 		// resp.then((data) => console.log(data)).catch((err) => console.log(err));
+	};
+
+	const handleEstado = (event) => {
+		setForm({ ...form, estado: event.target.value });
+	};
+
+	const handleCliente = (event) => {
+		setForm({ ...form, idCliente: event.target.value });
 	};
 
 	return (
@@ -517,6 +528,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-select"
 							aria-label="Default select example"
 							defaultValue={"XXXXX"}
+							onChange={handleEstado}
 						>
 							<option value="APROBADO">APROBADO</option>
 							<option value="RECHAZADO">RECHAZADO</option>
@@ -539,6 +551,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-select"
 							aria-label="Default select example"
 							defaultValue={"XXXXX"}
+							onChange={handleCliente}
 						>
 							{/* <option value="1">One</option>
 							<option value="2">Two</option>
