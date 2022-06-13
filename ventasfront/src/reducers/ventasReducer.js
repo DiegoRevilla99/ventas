@@ -39,6 +39,26 @@ export const ventasReducer = (state = [], action) => {
 
 			return ventasCancelEdit;
 
+		case "verDetalles":
+			const ventasDetalles = state.map((venta) => {
+				if (venta.id === action.payload) {
+					return { ...venta, verDetalles: true };
+				} else return venta;
+			});
+
+			return ventasDetalles;
+
+		case "cerrarDetalles":
+			const cerrarDetalles = state.map((venta) => {
+				if (venta.verDetalles === true) {
+					delete venta.verDetalles;
+					return venta;
+				} else return venta;
+			});
+			// console.log("ReducerVentasEDIT BORRADO: ", ventasCancelEdit);
+
+			return cerrarDetalles;
+
 		case "delete":
 			let eliminado = {};
 			const nuevo = state.filter((venta) => {

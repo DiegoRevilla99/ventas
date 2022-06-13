@@ -5,6 +5,9 @@ import { useFetch } from "../hooks/useFecth";
 
 import { Modal } from "./Modal";
 import { productosReducer } from "../reducers/productosReducer";
+import { petPut } from "../libs/petPut";
+import { getDetalles } from "../libs/getDetalles";
+import { getClientes } from "../libs/getClientes";
 
 const init = () => {
 	return [];
@@ -17,7 +20,10 @@ let styles = {
 
 export const CreateForm = React.memo(({ dispatch }) => {
 	const { data: productos, loading } = useFetch(getProductos);
+	const { data: clientes, loading: Clientes } = useFetch(getClientes);
 	const [errors, setErrors] = useState({});
+	console.log("CLIENTES", clientes);
+
 	const [form, setForm] = useState({
 		folio: " ",
 		costoTotal: 0,
@@ -33,16 +39,28 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const validationsForm = (form) => {
 		let errors = {};
+		let regexFolio = /^[a-zA-Z0-9#-°.,\s\u00E0-\u00FC]{4,10}$/;
+		let regexObservaciones = /^.{1,150}$/;
+		let regexCantidadPagada = /^[.,\d+(.\d)?]{1,8}$/;
+
 		if (!form.folio.trim()) {
 			errors.folio = "*El campo folio es obligatorio";
+		} else if (!regexFolio.test(form.folio.trim())) {
+			errors.folio = "*El campo folio solo acepta de 4 a 10 caracteres"
 		}
 		if (form.cantidadPagada == 0) {
 			errors.cantidadPagada = "*El campo cantidad es obligatorio";
+		} else if (!regexCantidadPagada.test(form.cantidadPagada.trim())) {
+			errors.cantidadPagada = "*La cantidad solo acepta de 1 a 8 dígitos y no puede contener numeros negativos"
 		}
 		if (form.cambio < 0) {
-			errors.cambio = "*El cambio no puede ser negativo";
+			errors.cambio = "*Cantidad incompleta";
 		}
-
+		if (!form.observaciones.trim()) {
+			errors.observaciones = "*El campo observaciones es obligatorio";
+		} else if (!regexObservaciones.test(form.observaciones.trim())) {
+			errors.observaciones = "*El campo observaciones no debe exceder los 150 caracteres"
+		}
 		return errors;
 	}
 
@@ -76,6 +94,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log("ANTES DE: ", stateProductos);
 
 		const resp = petPost("https://ventas-it-d.herokuapp.com/api/venta", {
 			folio: form.folio,
@@ -110,11 +129,56 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						idFactura: form.idFactura,
 					},
 				});
+				stateProductos.map((producto) => {
+					//console.log("ENTRA A VENDER", producto);
+
+					if (producto.seleccionado == true) {
+						console.log("VENTA DE ", producto);
+						const resp = petPut(
+							"https://compras-develop.herokuapp.com/api/compras/vender/" +
+							producto.idProducto +
+							"/" +
+							producto.cantidadVendidos,
+							{}
+						);
+						resp
+							.then((exito) => {
+								dispatchProductos({
+									type: "reducirStock",
+									payload: {
+										id: producto.idProducto,
+										cantidad: producto.cantidadVendidos,
+									},
+								});
+
+								const detalle = petPost(
+									"https://ventas-it-d.herokuapp.com/api/venta/" +
+									id +
+									"/ventadetalle",
+									{
+										idVenta: id,
+										cantidadProducto: producto.cantidadVendidos,
+										costoUnitario: producto.precioVenta,
+										costoTotal: producto.precioVenta * producto.cantidadVendidos,
+										estatusDelete: false,
+										idProducto: producto.idProducto,
+									}
+								);
+
+								detalle.then((exito) =>
+									console.log("SE REALIZÓ CON EXITO EL DETALLE")
+								);
+							})
+							.catch((fallo) => console.log("NO HAY SUFICIENTE STOCK"));
+					}
+				});
+				handleCancelar();
 			})
 			.catch((err) => {
 				// console.log(err);
 			});
-		handleCancelar();
+
+		// const detalles = ("url", )
 	};
 
 	//TODO LO QUE TIENE QUE VER CON PRODUCTOS
@@ -143,7 +207,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 		let costoTotal = 0;
 		seleccionados.map((seleccionado) => {
-			costoTotal = costoTotal + seleccionado.precioVenta;
+			costoTotal =
+				costoTotal + seleccionado.precioVenta * seleccionado.cantidadVendidos;
 		});
 		console.log("PrecioTotal: ", costoTotal);
 
@@ -157,7 +222,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	const handleAdd = (producto) => {
 		dispatchProductos({
 			type: "add",
-			payload: { ...producto, seleccionado: true },
+			payload: { ...producto, seleccionado: true, cantidadVendidos: 0 },
 		});
 	};
 
@@ -166,6 +231,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		dispatchProductos({
 			type: "cancelarUno",
 			payload: idProducto,
+		});
+	};
+
+	const handleCantidad = (event) => {
+		console.log("Target", event.target.dataset.id);
+		dispatchProductos({
+			type: "cantidadVendidos",
+			payload: { id: event.target.dataset.id, cantidad: event.target.value },
 		});
 	};
 
@@ -187,26 +260,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const estadoo = () => {
 		console.log(stateProductos);
+		// const resp = petPut(
+		// 	"https://compras-develop.herokuapp.com/api/compras/vender/5/1",
+		// 	{}
+		// );
 
-		const response = fetch(
-			"https://ventas-it-d.herokuapp.com/api/venta/1000/ventadetalle",
-			{
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					idVenta: 1000,
-					cantidadProducto: 20,
-					costoUnitario: 20,
-					costoTotal: 400,
-					estatusDelete: true,
-					idProducto: 3,
-				}),
-			}
-		);
-		const responseJSON = response.json();
+		// resp.then((data) => console.log(data)).catch((err) => console.log(err));
 	};
 
 	return (
@@ -265,6 +324,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										<th scope="col">Talla</th>
 										<th scope="col">Precio</th>
 										<th scope="col">Stock</th>
+										<th scope="col">Cantidad</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -277,6 +337,16 @@ export const CreateForm = React.memo(({ dispatch }) => {
 												<th>{producto.talla}</th>
 												<th>{producto.precioVenta}</th>
 												<th>{producto.stock}</th>
+												<th>
+													<input
+														type="number"
+														className="form-control"
+														id="total"
+														min={1}
+														data-id={producto.idProducto}
+														onChange={handleCantidad}
+													></input>
+												</th>
 												<th>
 													<button
 														type="button"
@@ -325,10 +395,11 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							<input
 								type="number"
 								className="form-control"
-								id="costoTotal"
+								id="total"
 								value={form.costoTotal}
 								onChange={handleChangeCostoTotal}
 							></input>
+
 						</fieldset>
 					</div>
 
@@ -379,8 +450,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							className="form-control"
 							id="observaciones"
 							value={form.observaciones}
+							onBlur={handleBlur}
 							onChange={handleChange}
 						></input>
+						{errors.observaciones && (
+							<div className="form-text" style={styles}>
+								{errors.observaciones}
+							</div>
+						)}
 					</div>
 
 					<div className="mb-3">
@@ -398,28 +475,45 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 					<div className="mb-3">
 						<label htmlFor="estado" className="form-label">
-							Estado:
+							Estado
 						</label>
-						<input
-							type="text"
-							className="form-control"
-							id="estado"
-							value={form.estado}
-							onChange={handleChange}
-						></input>
+						<select
+							className="form-select"
+							aria-label="Default select example"
+							defaultValue={"XXXXX"}>
+							<option value="APROBADO">APROBADO</option>
+							<option value="RECHAZADO">RECHAZADO</option>
+							<option value="EN REVISION">EN REVISION</option>
+						</select>
 					</div>
 
 					<div className="mb-3">
 						<label htmlFor="idCliente" className="form-label">
-							ID Cliente:
+							Cliente:
 						</label>
-						<input
+						{/* <input
 							type="number"
 							className="form-control"
 							id="idCliente"
 							value={form.idCliente}
-							onChange={handleChange}
-						></input>
+							onChange={handleChangeIdCliente}
+						></input> */}
+						<select
+							className="form-select"
+							aria-label="Default select example"
+							defaultValue={"XXXXX"}
+						>
+							{/* <option value="1">One</option>
+							<option value="2">Two</option>
+							<option value="3">Three</option> */}
+							{clientes.map((cliente) => {
+								return (
+									<option key={cliente.rfc} value={cliente.rfc}>
+										{cliente.rfc}
+									</option>
+								);
+							})}
+						</select>
 					</div>
 				</form>
 			</div>
@@ -432,7 +526,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				>
 					Cancelar
 				</button>
-				{form.cambio >= 0 ? (
+				{form.cambio >= 0 && form.costoTotal > 0 ? (
 					<button
 						type="button"
 						className="btn btn-primary"
@@ -447,6 +541,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					</button>
 				)}
 			</div>
+
 			<Modal tipo="delete" nombre="pruebaModal" title="Eliminar venta" />
 		</>
 	);

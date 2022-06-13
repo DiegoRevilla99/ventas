@@ -1,6 +1,7 @@
 import React from "react";
+import { getDetalles } from "../libs/getDetalles";
 
-export const Table = React.memo(({ ventas, loading, dispatch }) => {
+export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 	const handleDelete = (id) => {
 		dispatch({
 			type: "posibleDelete",
@@ -15,9 +16,23 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 		});
 	};
 
+	const handleDetail = (id) => {
+		dispatch({
+			type: "verDetalles",
+			payload: id,
+		});
+
+		//const ob = ventas.filter((venta) => venta.verDetalles == true).id;
+		//console.log("FILTER", ob);
+		// detalles = getDetalles(id);
+		// detalles.then((detalle) => console.log("DETALLES FINAL", detalle));
+
+		// console.log("DETALLES OBTENIDOS", detalles);
+	};
+
 	return (
 		<div className="container mb-4 border bg-white table-responsive">
-			<table className="table">
+			<table className="table align-middle">
 				<thead>
 					<tr>
 						<th scope="col">Id</th>
@@ -53,10 +68,19 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 											type="button"
 											className="btn btn-info me-1"
 											data-bs-toggle="modal"
+											data-bs-target="#detailModal"
+											onClick={() => handleDetail(venta.id)}
+										>
+											<i className="fa-solid fa-circle-info"></i>
+										</button>
+										<button
+											type="button"
+											className="btn btn-primary me-1"
+											data-bs-toggle="modal"
 											data-bs-target="#editModal"
 											onClick={() => handleEdit(venta.folio)}
 										>
-											<i className="small material-icons">edit</i>
+											<i className="fa-solid fa-pen-to-square"></i>
 										</button>
 										<button
 											type="button"
@@ -65,7 +89,7 @@ export const Table = React.memo(({ ventas, loading, dispatch }) => {
 											data-bs-target="#deleteModal"
 											onClick={() => handleDelete(venta.id)}
 										>
-											<i className="small material-icons">delete</i>
+											<i className="fa-solid fa-trash-can"></i>
 										</button>
 									</div>
 								</th>
