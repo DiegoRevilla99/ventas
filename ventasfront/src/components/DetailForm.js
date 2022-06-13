@@ -8,8 +8,8 @@ const init = () => {
 	return [];
 };
 
-export const DetailForm = React.memo(({ ventas }) => {
-	const [detalles, dispatch] = useReducer(detallesReducer, [], init);
+export const DetailForm = React.memo(({ ventas, dispatch }) => {
+	const [detalles, dispatchDetalles] = useReducer(detallesReducer, [], init);
 
 	const [productos, dispatchProductos] = useReducer(
 		productosDetallesReducer,
@@ -40,13 +40,14 @@ export const DetailForm = React.memo(({ ventas }) => {
 	// console.log("detallesReducer", detalles);
 
 	useEffect(() => {
+		console.log("VENTAAAAAAAAAAAAAAAAS", ventas);
 		const id = ventas.filter((venta) => venta.verDetalles == true);
 		console.log("id", id[0]?.id);
 		const resp = getDetalles(id[0]?.id || 0);
 
 		resp.then((detallesX) => {
 			console.log("detallesX", detallesX);
-			dispatch({
+			dispatchDetalles({
 				type: "addAll",
 				payload: detallesX,
 			});

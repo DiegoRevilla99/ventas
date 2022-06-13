@@ -49,12 +49,15 @@ export const ventasReducer = (state = [], action) => {
 			return ventasDetalles;
 
 		case "cerrarDetalles":
+			console.log("ENTRA A CERRRAR DETALLES");
 			const cerrarDetalles = state.map((venta) => {
 				if (venta.verDetalles === true) {
+					console.log("ENTRA A CERRRAR DETALLES FINAAAL");
 					delete venta.verDetalles;
 					return venta;
 				} else return venta;
 			});
+			return cerrarDetalles;
 			// console.log("ReducerVentasEDIT BORRADO: ", ventasCancelEdit);
 
 			return cerrarDetalles;

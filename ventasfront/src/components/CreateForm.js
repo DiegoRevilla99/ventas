@@ -257,10 +257,10 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	return (
 		<>
-			<div className="modal-body row">
-				<div className="col-md-8 border" style={{ height: "auto" }}>
+			<div className="modal-body row ">
+				<div className="col-md-8 border bg-light" style={{ height: "auto" }}>
 					<button onClick={estadoo}></button>
-					<div className="row">
+					<div className="row ">
 						<div className="col-12 h-50 table-responsive">
 							<h3>Productos</h3>
 							<table className="table border">
