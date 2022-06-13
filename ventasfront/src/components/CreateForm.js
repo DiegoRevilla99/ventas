@@ -5,6 +5,9 @@ import { useFetch } from "../hooks/useFecth";
 
 import { Modal } from "./Modal";
 import { productosReducer } from "../reducers/productosReducer";
+import { petPut } from "../libs/petPut";
+import { getDetalles } from "../libs/getDetalles";
+import { getClientes } from "../libs/getClientes";
 
 const init = () => {
 	return [];
@@ -12,7 +15,12 @@ const init = () => {
 
 export const CreateForm = React.memo(({ dispatch }) => {
 	const { data: productos, loading } = useFetch(getProductos);
-	// const productos = [];
+	const { data: clientes, loading: Clientes } = useFetch(getClientes);
+	console.log("CLIENTES", clientes);
+
+	//const { data: detalles, loading: loadingDetalles } = useFetch(getDetalles);
+
+	// console.log("Detalles", detalles);
 	const [form, setForm] = useState({
 		folio: " ",
 		costoTotal: 0,
@@ -72,6 +80,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		console.log("ANTES DE: ", stateProductos);
 
 		const resp = petPost("https://ventas-it-d.herokuapp.com/api/venta", {
 			folio: form.folio,
@@ -86,7 +95,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			idFactura: form.idFactura,
 		});
 
-		// let id = 0;
 		resp
 			.then((data) => {
 				const id = data.data;
@@ -107,14 +115,57 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						idFactura: form.idFactura,
 					},
 				});
+				stateProductos.map((producto) => {
+					//console.log("ENTRA A VENDER", producto);
+
+					if (producto.seleccionado == true) {
+						console.log("VENTA DE ", producto);
+						const resp = petPut(
+							"https://compras-develop.herokuapp.com/api/compras/vender/" +
+								producto.idProducto +
+								"/" +
+								producto.cantidadVendidos,
+							{}
+						);
+						resp
+							.then((exito) => {
+								dispatchProductos({
+									type: "reducirStock",
+									payload: {
+										id: producto.idProducto,
+										cantidad: producto.cantidadVendidos,
+									},
+								});
+
+								const detalle = petPost(
+									"https://ventas-it-d.herokuapp.com/api/venta/" +
+										id +
+										"/ventadetalle",
+									{
+										idVenta: id,
+										cantidadProducto: producto.cantidadVendidos,
+										costoUnitario: producto.precioVenta,
+										costoTotal:
+											producto.precioVenta * producto.cantidadVendidos,
+										estatusDelete: false,
+										idProducto: producto.idProducto,
+									}
+								);
+
+								detalle.then((exito) =>
+									console.log("SE REALIZÓ CON EXITO EL DETALLE")
+								);
+							})
+							.catch((fallo) => console.log("NO HAY SUFICIENTE STOCK"));
+					}
+				});
+				handleCancelar();
 			})
 			.catch((err) => {
 				// console.log(err);
 			});
 
 		// const detalles = ("url", )
-
-		handleCancelar();
 	};
 
 	//TODO LO QUE TIENE QUE VER CON PRODUCTOS
@@ -143,7 +194,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 		let costoTotal = 0;
 		seleccionados.map((seleccionado) => {
-			costoTotal = costoTotal + seleccionado.precioVenta;
+			costoTotal =
+				costoTotal + seleccionado.precioVenta * seleccionado.cantidadVendidos;
 		});
 		console.log("PrecioTotal: ", costoTotal);
 
@@ -157,7 +209,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	const handleAdd = (producto) => {
 		dispatchProductos({
 			type: "add",
-			payload: { ...producto, seleccionado: true },
+			payload: { ...producto, seleccionado: true, cantidadVendidos: 0 },
 		});
 	};
 
@@ -166,6 +218,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		dispatchProductos({
 			type: "cancelarUno",
 			payload: idProducto,
+		});
+	};
+
+	const handleCantidad = (event) => {
+		console.log("Target", event.target.dataset.id);
+		dispatchProductos({
+			type: "cantidadVendidos",
+			payload: { id: event.target.dataset.id, cantidad: event.target.value },
 		});
 	};
 
@@ -187,26 +247,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const estadoo = () => {
 		console.log(stateProductos);
+		// const resp = petPut(
+		// 	"https://compras-develop.herokuapp.com/api/compras/vender/5/1",
+		// 	{}
+		// );
 
-		const response = fetch(
-			"https://ventas-it-d.herokuapp.com/api/venta/1000/ventadetalle",
-			{
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					idVenta: 1000,
-					cantidadProducto: 20,
-					costoUnitario: 20,
-					costoTotal: 400,
-					estatusDelete: true,
-					idProducto: 3,
-				}),
-			}
-		);
-		const responseJSON = response.json();
+		// resp.then((data) => console.log(data)).catch((err) => console.log(err));
 	};
 
 	return (
@@ -265,6 +311,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										<th scope="col">Talla</th>
 										<th scope="col">Precio</th>
 										<th scope="col">Stock</th>
+										<th scope="col">Cantidad</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -277,6 +324,16 @@ export const CreateForm = React.memo(({ dispatch }) => {
 												<th>{producto.talla}</th>
 												<th>{producto.precioVenta}</th>
 												<th>{producto.stock}</th>
+												<th>
+													<input
+														type="number"
+														className="form-control"
+														id="total"
+														min={1}
+														data-id={producto.idProducto}
+														onChange={handleCantidad}
+													></input>
+												</th>
 												<th>
 													<button
 														type="button"
@@ -400,15 +457,31 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 					<div className="mb-3">
 						<label htmlFor="idCliente" className="form-label">
-							ID Cliente:
+							Cliente:
 						</label>
-						<input
+						{/* <input
 							type="number"
 							className="form-control"
 							id="idCliente"
 							value={form.idCliente}
 							onChange={handleChangeIdCliente}
-						></input>
+						></input> */}
+						<select
+							className="form-select"
+							aria-label="Default select example"
+							defaultValue={"XXXXX"}
+						>
+							{/* <option value="1">One</option>
+							<option value="2">Two</option>
+							<option value="3">Three</option> */}
+							{clientes.map((cliente) => {
+								return (
+									<option key={cliente.rfc} value={cliente.rfc}>
+										{cliente.rfc}
+									</option>
+								);
+							})}
+						</select>
 					</div>
 				</form>
 			</div>
@@ -421,7 +494,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				>
 					Cancelar
 				</button>
-				{form.cambio >= 0 ? (
+				{form.cambio >= 0 && form.costoTotal > 0 ? (
 					<button
 						type="button"
 						className="btn btn-primary"

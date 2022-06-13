@@ -1,6 +1,7 @@
 import React from "react";
 import { CreateForm } from "./CreateForm";
 import { DeleteForm } from "./DeleteForm";
+import { DetailForm } from "./DetailForm";
 import { EditForm } from "./EditForm";
 
 export const Modal = React.memo(({ tipo, nombre, dispatch, ventas, title }) => {
@@ -16,7 +17,11 @@ export const Modal = React.memo(({ tipo, nombre, dispatch, ventas, title }) => {
 		>
 			<div
 				className={`modal-dialog modal-dialog-centered ${
-					nombre == "createModal" ? "modal-xl" : ""
+					nombre == "createModal"
+						? "modal-xl"
+						: nombre == "detailModal"
+						? "modal-lg"
+						: ""
 				}`}
 			>
 				<div className="modal-content">
@@ -41,6 +46,9 @@ export const Modal = React.memo(({ tipo, nombre, dispatch, ventas, title }) => {
 
 							case "delete":
 								return <DeleteForm dispatch={dispatch} ventas={ventas} />;
+
+							case "detail":
+								return <DetailForm dispatch={dispatch} ventas={ventas} />;
 
 							default:
 								console.log("DEFAULT");

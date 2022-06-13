@@ -1,9 +1,9 @@
-export const getProductos = async () => {
-	const url = "https://compras-develop.herokuapp.com/api/compras/";
+export const getClientes = async () => {
+	const url = "https://client-development.herokuapp.com/api/cliente/";
 	const resp = await fetch(url);
 	const { data } = await resp.json();
 
-	console.log("data Normal: ", data);
+	console.log("CLIENTES Normal: ", data);
 	// console.log(
 	// 	"data Ordenados: ",
 	// 	data.sort((a1, a2) => {

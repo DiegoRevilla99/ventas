@@ -15,6 +15,7 @@ function App() {
 	const [ventas, dispatch] = useReducer(ventasReducer, [], init);
 	const { data, loading } = useFetch(getVentas);
 	console.log(ventas);
+	const detalles = [];
 
 	useEffect(() => {
 		if (!loading) {
@@ -35,6 +36,7 @@ function App() {
 							ventas={ventas}
 							loading={loading}
 							dispatch={dispatch}
+							detalles={detalles}
 						/>
 					</div>
 					<div className="col-md-2">
@@ -61,6 +63,14 @@ function App() {
 				dispatch={dispatch}
 				ventas={ventas}
 				title="Eliminar venta"
+			/>
+
+			<Modal
+				tipo="detail"
+				nombre="detailModal"
+				dispatch={dispatch}
+				ventas={ventas}
+				title="Detalles de la venta"
 			/>
 		</div>
 	);
