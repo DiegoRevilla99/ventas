@@ -10,13 +10,44 @@ import { getDetalles } from "../libs/getDetalles";
 import { getClientes } from "../libs/getClientes";
 
 const init = () => {
-	return [];
+	return [
+		{
+			idProducto: 1,
+			precioCompra: 400.5,
+			precioVenta: 999.0,
+			talla: 27.0,
+			stock: 80,
+			color: "Blancos",
+			marca: "Adidas",
+			modelo: "GRAND COURT",
+		},
+		{
+			idProducto: 2,
+			precioCompra: 500.5,
+			precioVenta: 100.0,
+			talla: 27.0,
+			stock: 80,
+			color: "Negros",
+			marca: "Converse",
+			modelo: "Chidos",
+		},
+		{
+			idProducto: 3,
+			precioCompra: 50.5,
+			precioVenta: 100.0,
+			talla: 27.0,
+			stock: 80,
+			color: "Azul",
+			marca: "Nike",
+			modelo: "Buchones",
+		},
+	];
 };
 
 let styles = {
 	fontWeight: "bold",
-	color: "red"
-}
+	color: "red",
+};
 
 export const CreateForm = React.memo(({ dispatch }) => {
 	const { data: productos, loading } = useFetch(getProductos);
@@ -46,12 +77,13 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		if (!form.folio.trim()) {
 			errors.folio = "*El campo folio es obligatorio";
 		} else if (!regexFolio.test(form.folio.trim())) {
-			errors.folio = "*El campo folio solo acepta de 4 a 10 caracteres"
+			errors.folio = "*El campo folio solo acepta de 4 a 10 caracteres";
 		}
 		if (form.cantidadPagada == 0) {
 			errors.cantidadPagada = "*El campo cantidad es obligatorio";
 		} else if (!regexCantidadPagada.test(form.cantidadPagada.trim())) {
-			errors.cantidadPagada = "*La cantidad solo acepta de 1 a 8 dígitos y no puede contener numeros negativos"
+			errors.cantidadPagada =
+				"*La cantidad solo acepta de 1 a 8 dígitos y no puede contener numeros negativos";
 		}
 		if (form.cambio < 0) {
 			errors.cambio = "*Cantidad incompleta";
@@ -59,10 +91,11 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		if (!form.observaciones.trim()) {
 			errors.observaciones = "*El campo observaciones es obligatorio";
 		} else if (!regexObservaciones.test(form.observaciones.trim())) {
-			errors.observaciones = "*El campo observaciones no debe exceder los 150 caracteres"
+			errors.observaciones =
+				"*El campo observaciones no debe exceder los 150 caracteres";
 		}
 		return errors;
-	}
+	};
 
 	const handleChange = (event) => {
 		const { id, value } = event.target;
@@ -136,9 +169,9 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						console.log("VENTA DE ", producto);
 						const resp = petPut(
 							"https://compras-develop.herokuapp.com/api/compras/vender/" +
-							producto.idProducto +
-							"/" +
-							producto.cantidadVendidos,
+								producto.idProducto +
+								"/" +
+								producto.cantidadVendidos,
 							{}
 						);
 						resp
@@ -153,13 +186,14 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 								const detalle = petPost(
 									"https://ventas-it-d.herokuapp.com/api/venta/" +
-									id +
-									"/ventadetalle",
+										id +
+										"/ventadetalle",
 									{
 										idVenta: id,
 										cantidadProducto: producto.cantidadVendidos,
 										costoUnitario: producto.precioVenta,
-										costoTotal: producto.precioVenta * producto.cantidadVendidos,
+										costoTotal:
+											producto.precioVenta * producto.cantidadVendidos,
 										estatusDelete: false,
 										idProducto: producto.idProducto,
 									}
@@ -190,12 +224,13 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	);
 
 	useEffect(() => {
-		if (!loading) {
-			dispatchProductos({
-				type: "addAll",
-				payload: productos,
-			});
-		}
+		//ACTIVAAAAAAAAAAAAAAAAAAAAAAAAR
+		// if (!loading) {
+		// 	dispatchProductos({
+		// 		type: "addAll",
+		// 		payload: productos,
+		// 	});
+		// }
 	}, [loading]);
 
 	useEffect(() => {
@@ -271,12 +306,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	return (
 		<>
 			<div className="modal-body row">
-				<div className="col-md-8 border" style={{ height: "auto" }}>
+				<div className="col-md-8 border bg-light" style={{ height: "auto" }}>
 					<button onClick={estadoo}></button>
 					<div className="row">
 						<div className="col-12 h-50 table-responsive">
 							<h3>Productos</h3>
-							<table className="table border">
+							<table className="table border table-striped">
 								<thead>
 									<tr>
 										<th scope="col">id</th>
@@ -343,6 +378,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 														className="form-control"
 														id="total"
 														min={1}
+														max={producto.stock}
 														data-id={producto.idProducto}
 														onChange={handleCantidad}
 													></input>
@@ -399,7 +435,6 @@ export const CreateForm = React.memo(({ dispatch }) => {
 								value={form.costoTotal}
 								onChange={handleChangeCostoTotal}
 							></input>
-
 						</fieldset>
 					</div>
 
@@ -418,7 +453,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						{errors.cantidadPagada && (
 							<div className="form-text" style={styles}>
 								{errors.cantidadPagada}
-							</div>)}
+							</div>
+						)}
 					</div>
 
 					<div className="mb-3">
@@ -480,7 +516,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						<select
 							className="form-select"
 							aria-label="Default select example"
-							defaultValue={"XXXXX"}>
+							defaultValue={"XXXXX"}
+						>
 							<option value="APROBADO">APROBADO</option>
 							<option value="RECHAZADO">RECHAZADO</option>
 							<option value="EN REVISION">EN REVISION</option>

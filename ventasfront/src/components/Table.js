@@ -32,7 +32,7 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 
 	return (
 		<div className="container mb-4 border bg-white table-responsive">
-			<table className="table align-middle">
+			<table className="table align-middle table-striped">
 				<thead>
 					<tr>
 						<th scope="col">Id</th>
