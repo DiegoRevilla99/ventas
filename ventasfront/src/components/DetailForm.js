@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { useFetch } from "../hooks/useFecth";
 import { getDetalles } from "../libs/getDetalles";
+import { getProductos } from "../libs/getProductos";
 import { detallesReducer } from "../reducers/detallesReducer";
 import { productosDetallesReducer } from "../reducers/productosDetallesReducer";
 
@@ -9,6 +10,7 @@ const init = () => {
 };
 
 export const DetailForm = React.memo(({ ventas, dispatch }) => {
+	const { data, loading } = useFetch(getProductos);
 	const [detalles, dispatchDetalles] = useReducer(detallesReducer, [], init);
 
 	const [productos, dispatchProductos] = useReducer(
@@ -58,32 +60,56 @@ export const DetailForm = React.memo(({ ventas, dispatch }) => {
 		});
 	}, [ventas]);
 
+	useEffect(() => {
+		console.log("loadingProductos", loading);
+		if (!loading && loading != undefined) {
+			dispatchProductos({
+				type: "addAll",
+				payload: data,
+			});
+			console.log("dataProductos", data);
+		}
+	}, [loading]);
+
 	return (
 		<>
 			<div className="modal-body">
 				<div className="row">
-					{detalles.map((detalle) => {
-						return (
-							<div key={detalle.id} className="row mb-4">
-								<div className="col-6">
-									<h4>Detalle: {detalle.id}</h4>
-									<h4>Cantidad: {detalle.cantidadProducto}</h4>
-									<h4>Costo por pieza: {detalle.costoUnitario}</h4>
-									<h4>Pago total: {detalle.costoTotal}</h4>
-									<h4>Id del producto: {detalle.idProducto}</h4>
-								</div>
+					<div className="">
+						{detalles.map((detalle, i) => {
+							let productoE = {};
+							productos.map((producto) => {
+								if (detalle.idProducto == producto.idProducto) {
+									console.log("ENTRA A LA COINCIDENCIA");
+									productoE = producto;
+								}
+							});
 
-								<div className="col-6">
-									<h4>Marca: </h4>
-									<h4>Modelo: </h4>
-									<h4>Talla: </h4>
-									<h4>Color: </h4>
-								</div>
+							return (
+								<div
+									className={`row mb-4 ${
+										i % 2 == 0 ? "bg-secondary bg-opacity-25" : "bg-light"
+									}`}
+									key={detalle.id + productoE.idProducto}
+								>
+									<div className="col-6">
+										<h4>Detalle: {detalle.id}</h4>
+										<h4>Cantidad: {detalle.cantidadProducto}</h4>
+										<h4>Costo por pieza: {detalle.costoUnitario}</h4>
+										<h4>Pago total: {detalle.costoTotal}</h4>
+										<h4>Id del producto: {detalle.idProducto}</h4>
+									</div>
 
-								<hr></hr>
-							</div>
-						);
-					})}
+									<div className="col-6">
+										<h4>Marca: {productoE.marca}</h4>
+										<h4>Modelo: {productoE.modelo}</h4>
+										<h4>Talla: {productoE.talla}</h4>
+										<h4>Color: {productoE.color}</h4>
+									</div>
+								</div>
+							);
+						})}
+					</div>
 				</div>
 			</div>
 			<div className="modal-footer">

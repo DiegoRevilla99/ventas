@@ -17,7 +17,7 @@ export const getVentas = async () => {
 				fecha: venta.fecha,
 				estado: venta.estado,
 				statusDelete: venta.statusDelete,
-				idCliente: venta.idCliente,
+				rfc: venta.rfc,
 				idFactura: venta.idFactura,
 			};
 		});

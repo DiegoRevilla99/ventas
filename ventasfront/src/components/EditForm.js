@@ -3,8 +3,8 @@ import { petPut } from "../libs/petPut";
 
 let styles = {
 	fontWeight: "bold",
-	color: "red"
-}
+	color: "red",
+};
 
 export const EditForm = React.memo(({ dispatch, ventas }) => {
 	const [errors, setErrors] = useState({});
@@ -17,7 +17,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		fecha: null,
 		estado: null,
 		statusDelete: false,
-		idCliente: null,
+		rfc: null,
 		idFactura: null,
 	});
 
@@ -37,12 +37,14 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		if (form.costoTotal == 0) {
 			errors.costoTotal = "*El campo cantidad total es obligatorio";
 		} else if (!regexCantidadPagada.test(form.costoTotal.trim())) {
-			errors.costoTotal = "*La cantidad total solo acepta de 1 a 8 dígitos y no puede contener numeros negativos"
+			errors.costoTotal =
+				"*La cantidad total solo acepta de 1 a 8 dígitos y no puede contener numeros negativos";
 		}
 		if (form.cantidadPagada == 0) {
 			errors.cantidadPagada = "*El campo cantidad es obligatorio";
 		} else if (!regexCantidadPagada.test(form.cantidadPagada.trim())) {
-			errors.cantidadPagada = "*La cantidad solo acepta de 1 a 8 dígitos y no puede contener numeros negativos"
+			errors.cantidadPagada =
+				"*La cantidad solo acepta de 1 a 8 dígitos y no puede contener numeros negativos";
 		}
 		if (form.cambio < 0) {
 			errors.cambio = "*Cantidad incompleta";
@@ -50,10 +52,11 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		if (!form.observaciones.trim()) {
 			errors.observaciones = "*El campo observaciones es obligatorio";
 		} else if (!regexObservaciones.test(form.observaciones.trim())) {
-			errors.observaciones = "*El campo observaciones no debe exceder los 150 caracteres"
+			errors.observaciones =
+				"*El campo observaciones no debe exceder los 150 caracteres";
 		}
 		return errors;
-	}
+	};
 
 	const handleChange = (event) => {
 		const { id, value } = event.target;
@@ -104,7 +107,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 				fecha: form.fecha,
 				estado: form.estado,
 				statusDelete: form.statusDelete,
-				idCliente: form.idCliente,
+				rfc: form.rfc,
 				idFactura: form.idFactura,
 			}
 		);
@@ -123,7 +126,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 				fecha: form.fecha,
 				estado: form.estado,
 				statusDelete: form.statusDelete,
-				idCliente: form.idCliente,
+				rfc: form.rfc,
 				idFactura: form.idFactura,
 			},
 		});
@@ -164,7 +167,8 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 						{errors.costoTotal && (
 							<div className="form-text" style={styles}>
 								{errors.costoTotal}
-							</div>)}
+							</div>
+						)}
 					</div>
 
 					<div className="mb-3">
@@ -182,7 +186,8 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 						{errors.cantidadPagada && (
 							<div className="form-text" style={styles}>
 								{errors.cantidadPagada}
-							</div>)}
+							</div>
+						)}
 					</div>
 
 					<div className="mb-3">
@@ -244,24 +249,12 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 						<select
 							className="form-select"
 							aria-label="Default select example"
-							defaultValue={form.estado}>
+							defaultValue={form.estado}
+						>
 							<option value="APROBADO">APROBADO</option>
 							<option value="RECHAZADO">RECHAZADO</option>
 							<option value="EN REVISION">EN REVISION</option>
 						</select>
-					</div>
-
-					<div className="mb-3">
-						<label htmlFor="idCliente" className="form-label">
-							ID Cliente:
-						</label>
-						<input
-							type="number"
-							className="form-control"
-							id="idCliente"
-							defaultValue={form.idCliente}
-							onChange={handleChange}
-						></input>
 					</div>
 				</form>
 			</div>

@@ -53,7 +53,7 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 						ventas?.map((venta, i) => (
 							<tr key={venta.id || 0}>
 								<th>{venta.id}</th>
-								<th>{venta.idCliente}</th>
+								<th>{venta.rfc}</th>
 								<th>{venta.idFactura}</th>
 								<th>{venta.folio}</th>
 								<th>{venta.costoTotal}</th>

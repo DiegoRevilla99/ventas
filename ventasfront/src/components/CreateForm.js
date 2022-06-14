@@ -64,7 +64,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		fecha: "",
 		estado: "APROBADO",
 		statusDelete: false,
-		idCliente: 0,
+		rfc: 0,
 		idFactura: 0,
 	});
 
@@ -138,7 +138,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			fecha: form.fecha,
 			estado: form.estado,
 			statusDelete: form.statusDelete,
-			idCliente: form.idCliente,
+			rfc: form.rfc,
 			idFactura: form.idFactura,
 		});
 
@@ -158,7 +158,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						fecha: form.fecha,
 						estado: form.estado,
 						statusDelete: form.statusDelete,
-						idCliente: form.idCliente,
+						rfc: form.rfc,
 						idFactura: form.idFactura,
 					},
 				});
@@ -291,7 +291,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			fecha: " ",
 			estado: " ",
 			statusDelete: false,
-			idCliente: 0,
+			rfc: 0,
 			idFactura: 0,
 		});
 	};
@@ -311,7 +311,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	};
 
 	const handleCliente = (event) => {
-		setForm({ ...form, idCliente: event.target.value });
+		setForm({ ...form, rfc: event.target.value });
 	};
 
 	return (
