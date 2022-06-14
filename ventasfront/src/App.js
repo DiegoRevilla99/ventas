@@ -6,6 +6,7 @@ import { TableContainer } from "./components/TableContainer";
 import { useFetch } from "./hooks/useFecth";
 import { getVentas } from "./libs/getVentas";
 import { ventasReducer } from "./reducers/ventasReducer";
+import "./App.css";
 
 const init = () => {
 	return [];
