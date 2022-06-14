@@ -289,7 +289,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			cambio: 0,
 			observaciones: "",
 			fecha: " ",
-			estado: " ",
+			estado: "APROBADO",
 			statusDelete: false,
 			rfc: 0,
 			idFactura: 0,
@@ -388,7 +388,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 														type="number"
 														className="form-control"
 														id="total"
-														min={1}
+														min={0}
 														max={producto.stock}
 														data-id={producto.idProducto}
 														onChange={handleCantidad}
