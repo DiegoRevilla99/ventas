@@ -64,7 +64,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		fecha: "",
 		estado: "APROBADO",
 		statusDelete: false,
-		rfc: 0,
+		rfc: "XXXX",
 		idFactura: 0,
 	});
 
@@ -550,12 +550,13 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						<select
 							className="form-select"
 							aria-label="Default select example"
-							defaultValue={"XXXXX"}
+							defaultValue={"XXXX"}
 							onChange={handleCliente}
 						>
 							{/* <option value="1">One</option>
 							<option value="2">Two</option>
 							<option value="3">Three</option> */}
+							<option value="XXXX">XXXX</option>
 							{clientes.map((cliente) => {
 								return (
 									<option key={cliente.rfc} value={cliente.rfc}>
