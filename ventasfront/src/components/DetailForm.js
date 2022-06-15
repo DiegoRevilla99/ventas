@@ -90,7 +90,7 @@ export const DetailForm = React.memo(({ ventas, dispatch }) => {
 									className={`row mb-4 ${
 										i % 2 == 0 ? "bg-secondary bg-opacity-25" : "bg-light"
 									}`}
-									key={detalle.id + productoE.idProducto}
+									key={detalle.id + productoE.idProducto + i}
 								>
 									<div className="col-6">
 										<h4>Detalle: {detalle.id}</h4>

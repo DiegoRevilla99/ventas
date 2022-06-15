@@ -9,6 +9,8 @@ import { petPut } from "../libs/petPut";
 import { getDetalles } from "../libs/getDetalles";
 import { getClientes } from "../libs/getClientes";
 
+let date = new Date();
+let seVende = true;
 const init = () => {
 	return [
 		{
@@ -61,7 +63,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		cantidadPagada: 0,
 		cambio: 0,
 		observaciones: "",
-		fecha: "",
+		fecha:
+			String(date.getDate()).padStart(2, "0") +
+			"/" +
+			String(date.getMonth() + 1).padStart(2, "0") +
+			"/" +
+			date.getFullYear(),
 		estado: "APROBADO",
 		statusDelete: false,
 		rfc: "XXXX",
@@ -129,13 +136,27 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		event.preventDefault();
 		console.log("ANTES DE: ", stateProductos);
 
+		// let seVende = true;
+
+		// stateProductos.map((producto) => {
+		// 	if (producto.cantidadVendidos > producto.stock) {
+		// 		console.log("NO SE VENDE");
+		// 		seVende = false;
+		// 	}
+		// });
+
 		const resp = petPost("https://ventas-it-d.herokuapp.com/api/venta", {
 			folio: form.folio,
 			costoTotal: form.costoTotal,
 			cantidadPagada: form.cantidadPagada,
 			cambio: form.cantidadPagada - form.costoTotal,
 			observaciones: form.observaciones,
-			fecha: form.fecha,
+			fecha:
+				String(date.getDate()).padStart(2, "0") +
+				"/" +
+				String(date.getMonth() + 1).padStart(2, "0") +
+				"/" +
+				date.getFullYear(),
 			estado: form.estado,
 			statusDelete: form.statusDelete,
 			rfc: form.rfc,
@@ -144,69 +165,72 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 		resp
 			.then((data) => {
-				const id = data.data;
-				console.log("RESPUESTA: ", data);
-				dispatch({
-					type: "add",
-					payload: {
-						id: id,
-						folio: form.folio,
-						costoTotal: form.costoTotal,
-						cantidadPagada: form.cantidadPagada,
-						cambio: form.cantidadPagada - form.costoTotal,
-						observaciones: form.observaciones,
-						fecha: form.fecha,
-						estado: form.estado,
-						statusDelete: form.statusDelete,
-						rfc: form.rfc,
-						idFactura: form.idFactura,
-					},
-				});
-				stateProductos.map((producto) => {
-					//console.log("ENTRA A VENDER", producto);
+				console.log("DATA", data);
+				if (data.code == 201) {
+					const id = data.data;
+					console.log("ID DE LA VENTA: ", data);
+					dispatch({
+						type: "add",
+						payload: {
+							id: id,
+							folio: form.folio,
+							costoTotal: form.costoTotal,
+							cantidadPagada: form.cantidadPagada,
+							cambio: form.cantidadPagada - form.costoTotal,
+							observaciones: form.observaciones,
+							fecha: form.fecha,
+							estado: form.estado,
+							statusDelete: form.statusDelete,
+							rfc: form.rfc,
+							idFactura: form.idFactura,
+						},
+					});
+					stateProductos.map((producto) => {
+						//console.log("ENTRA A VENDER", producto);
 
-					if (producto.seleccionado == true) {
-						console.log("VENTA DE ", producto);
-						const resp = petPut(
-							"https://compras-testing.herokuapp.com/api/compras/vender/" +
-								producto.idProducto +
-								"/" +
-								producto.cantidadVendidos,
-							{}
-						);
-						resp
-							.then((exito) => {
-								dispatchProductos({
-									type: "reducirStock",
-									payload: {
-										id: producto.idProducto,
-										cantidad: producto.cantidadVendidos,
-									},
-								});
+						if (producto.seleccionado == true) {
+							console.log("VENTA DE ", producto);
+							const resp = petPut(
+								"https://compras-testing.herokuapp.com/api/compras/vender/" +
+									producto.idProducto +
+									"/" +
+									producto.cantidadVendidos,
+								{}
+							);
+							resp
+								.then((exito) => {
+									dispatchProductos({
+										type: "reducirStock",
+										payload: {
+											id: producto.idProducto,
+											cantidad: producto.cantidadVendidos,
+										},
+									});
 
-								const detalle = petPost(
-									"https://ventas-it-d.herokuapp.com/api/venta/" +
-										id +
-										"/ventadetalle",
-									{
-										idVenta: id,
-										cantidadProducto: producto.cantidadVendidos,
-										costoUnitario: producto.precioVenta,
-										costoTotal:
-											producto.precioVenta * producto.cantidadVendidos,
-										estatusDelete: false,
-										idProducto: producto.idProducto,
-									}
-								);
+									const detalle = petPost(
+										"https://ventas-it-d.herokuapp.com/api/venta/" +
+											id +
+											"/ventadetalle",
+										{
+											idVenta: id,
+											cantidadProducto: producto.cantidadVendidos,
+											costoUnitario: producto.precioVenta,
+											costoTotal:
+												producto.precioVenta * producto.cantidadVendidos,
+											estatusDelete: false,
+											idProducto: producto.idProducto,
+										}
+									);
 
-								detalle.then((exito) =>
-									console.log("SE REALIZÓ CON EXITO EL DETALLE")
-								);
-							})
-							.catch((fallo) => console.log("NO HAY SUFICIENTE STOCK"));
-					}
-				});
-				handleCancelar();
+									detalle.then((exito) =>
+										console.log("SE REALIZÓ CON EXITO EL DETALLE")
+									);
+								})
+								.catch((fallo) => console.log("NO HAY SUFICIENTE STOCK"));
+						}
+					});
+					handleCancelar();
+				} else console.log("ERROR AL REALIZAR LA VENTA");
 			})
 			.catch((err) => {
 				// console.log(err);
@@ -271,6 +295,17 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 	const handleCantidad = (event) => {
 		console.log("Target", event.target.dataset.id);
+		const value = parseInt(event.target.value);
+		const stock = parseInt(event.target.dataset.stock);
+		if (value > stock) {
+			console.log("VALUE", event.target.value);
+			console.log("STOCK", event.target.dataset.stock);
+			console.log("NO SE PUEDE VENDER");
+			seVende = false;
+		} else {
+			console.log("SE PUEDE VENDER");
+			seVende = true;
+		}
 		dispatchProductos({
 			type: "cantidadVendidos",
 			payload: {
@@ -288,7 +323,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			cantidadPagada: 0,
 			cambio: 0,
 			observaciones: "",
-			fecha: " ",
+			fecha:
+				String(date.getDate()).padStart(2, "0") +
+				"/" +
+				String(date.getMonth() + 1).padStart(2, "0") +
+				"/" +
+				date.getFullYear(),
 			estado: "APROBADO",
 			statusDelete: false,
 			rfc: 0,
@@ -335,7 +375,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 								</thead>
 								<tbody>
 									{stateProductos?.map((producto) =>
-										producto.seleccionado == true ? null : (
+										producto.seleccionado == true ||
+										producto.stock == 0 ? null : (
 											<tr key={producto.idProducto || 0}>
 												<th>{producto.idProducto}</th>
 												<th>{producto.marca}</th>
@@ -391,9 +432,11 @@ export const CreateForm = React.memo(({ dispatch }) => {
 														min={0}
 														max={producto.stock}
 														data-id={producto.idProducto}
+														data-stock={producto.stock}
 														onChange={handleCantidad}
 													></input>
 												</th>
+
 												<th>
 													<button
 														type="button"
@@ -507,7 +550,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						)}
 					</div>
 
-					<div className="mb-3">
+					{/* <div className="mb-3">
 						<label htmlFor="fecha" className="form-label">
 							Fecha:
 						</label>
@@ -518,7 +561,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							value={form.fecha}
 							onChange={handleChange}
 						></input>
-					</div>
+					</div> */}
 
 					<div className="mb-3">
 						<label htmlFor="estado" className="form-label">
@@ -577,7 +620,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				>
 					Cancelar
 				</button>
-				{form.cambio >= 0 && form.costoTotal > 0 ? (
+				{form.cambio >= 0 && form.costoTotal > 0 && seVende ? (
 					<button
 						type="button"
 						className="btn btn-primary"
