@@ -119,7 +119,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		setForm({
 			...form,
 			costoTotal: value,
-			cambio: form.cantidadPagada - value,
+			cambio: (form.cantidadPagada - value).toFixed(2),
 		});
 	};
 
@@ -128,7 +128,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		setForm({
 			...form,
 			cantidadPagada: value,
-			cambio: value - form.costoTotal,
+			cambio: (value - form.costoTotal).toFixed(2),
 		});
 	};
 
@@ -192,9 +192,9 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							console.log("VENTA DE ", producto);
 							const resp = petPut(
 								"https://compras-testing.herokuapp.com/api/compras/vender/" +
-									producto.idProducto +
-									"/" +
-									producto.cantidadVendidos,
+								producto.idProducto +
+								"/" +
+								producto.cantidadVendidos,
 								{}
 							);
 							resp
@@ -209,8 +209,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 									const detalle = petPost(
 										"https://ventas-it-d.herokuapp.com/api/venta/" +
-											id +
-											"/ventadetalle",
+										id +
+										"/ventadetalle",
 										{
 											idVenta: id,
 											cantidadProducto: producto.cantidadVendidos,
@@ -376,7 +376,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 								<tbody>
 									{stateProductos?.map((producto) =>
 										producto.seleccionado == true ||
-										producto.stock == 0 ? null : (
+											producto.stock == 0 ? null : (
 											<tr key={producto.idProducto || 0}>
 												<th>{producto.idProducto}</th>
 												<th>{producto.marca}</th>

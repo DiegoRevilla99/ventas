@@ -92,7 +92,7 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 								<th>{venta.fecha}</th>
 								<th>{venta.estado}</th>
 								<th>
-									<div className="d-grid gap-2 d-md-block">
+									<div className="btn-group btn-group-justified">
 										<button
 											type="button"
 											className="btn btn-info me-1"
