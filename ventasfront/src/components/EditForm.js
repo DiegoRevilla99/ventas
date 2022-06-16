@@ -233,13 +233,15 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 						<label htmlFor="fecha" className="form-label">
 							Fecha:
 						</label>
-						<input
-							type="date"
-							className="form-control"
-							id="fecha"
-							defaultValue={form.fecha}
-							onChange={handleChange}
-						></input>
+						<fieldset disabled>
+							<input
+								type="text"
+								className="form-control"
+								id="fecha"
+								defaultValue={form.fecha}
+								onChange={handleChange}
+							></input>
+						</fieldset>
 					</div>
 
 					<div className="mb-3">

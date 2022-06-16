@@ -66,7 +66,7 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 					<tr>
 						<th scope="col">Id</th>
 						<th scope="col">Cliente</th>
-						<th scope="col">Factura</th>
+						{/* <th scope="col">Factura</th> */}
 						<th scope="col">Folio</th>
 						<th scope="col">Total</th>
 						<th scope="col">Pago</th>
@@ -83,7 +83,7 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 							<tr key={venta.id || 0}>
 								<th>{venta.id}</th>
 								<th>{venta.rfc}</th>
-								<th>{venta.idFactura}</th>
+								{/* <th>{venta.idFactura}</th> */}
 								<th>{venta.folio}</th>
 								<th>{venta.costoTotal}</th>
 								<th>{venta.cantidadPagada}</th>

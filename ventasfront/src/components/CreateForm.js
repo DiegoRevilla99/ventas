@@ -207,6 +207,21 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										},
 									});
 
+									const pago = petPost(
+										"https://payment-development.herokuapp.com/api/payment/pay",
+										{
+											referenceID: String(
+												Math.floor(Math.random() * (99999999 - 1 + 1) + 1)
+											),
+											paymentAmount: form.costoTotal,
+											paymentMethod: "Efectivo",
+										}
+									);
+
+									pago
+										.then(() => console.log("SE REALIZÓ CON EXITO EL PAGO"))
+										.catch(() => console.log("NO SE PUDO REALIZAR EL PAGO"));
+
 									const detalle = petPost(
 										"https://ventas-it-d.herokuapp.com/api/venta/" +
 											id +
