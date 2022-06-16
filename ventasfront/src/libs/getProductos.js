@@ -1,5 +1,5 @@
 export const getProductos = async () => {
-	const url = "https://compras-testing.herokuapp.com/api/compras/";
+	const url = "https://compras-develop.herokuapp.com/api/compras/";
 	const resp = await fetch(url);
 	const { data } = await resp.json();
 

@@ -191,7 +191,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						if (producto.seleccionado == true) {
 							console.log("VENTA DE ", producto);
 							const resp = petPut(
-								"https://compras-testing.herokuapp.com/api/compras/vender/" +
+								"https://compras-develop.herokuapp.com/api/compras/vender/" +
 									producto.idProducto +
 									"/" +
 									producto.cantidadVendidos,
