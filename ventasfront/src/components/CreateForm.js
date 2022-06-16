@@ -119,7 +119,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		setForm({
 			...form,
 			costoTotal: value,
-			cambio: form.cantidadPagada - value,
+			cambio: (form.cantidadPagada - value).toFixed(2),
 		});
 	};
 
@@ -128,7 +128,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		setForm({
 			...form,
 			cantidadPagada: value,
-			cambio: value - form.costoTotal,
+			cambio: (value - form.costoTotal).toFixed(2),
 		});
 	};
 
@@ -149,7 +149,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 			folio: form.folio,
 			costoTotal: form.costoTotal,
 			cantidadPagada: form.cantidadPagada,
-			cambio: form.cantidadPagada - form.costoTotal,
+			cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
 			observaciones: form.observaciones,
 			fecha:
 				String(date.getDate()).padStart(2, "0") +
@@ -176,7 +176,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 							folio: form.folio,
 							costoTotal: form.costoTotal,
 							cantidadPagada: form.cantidadPagada,
-							cambio: form.cantidadPagada - form.costoTotal,
+							cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
 							observaciones: form.observaciones,
 							fecha: form.fecha,
 							estado: form.estado,
@@ -274,7 +274,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		setForm({
 			...form,
 			costoTotal: costoTotal,
-			cambio: form.cantidadPagada - costoTotal,
+			cambio: (form.cantidadPagada - costoTotal).toFixed(2),
 		});
 	}, [stateProductos]);
 
@@ -435,6 +435,11 @@ export const CreateForm = React.memo(({ dispatch }) => {
 														data-stock={producto.stock}
 														onChange={handleCantidad}
 													></input>
+													{errors.cantidad && (
+														<div className="form-text" style={styles}>
+															{errors.cantidad}
+														</div>
+													)}
 												</th>
 
 												<th>

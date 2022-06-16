@@ -73,7 +73,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		setForm({
 			...form,
 			costoTotal: value,
-			cambio: form.cantidadPagada - value,
+			cambio: (form.cantidadPagada - value).toFixed(2),
 		});
 	};
 
@@ -82,7 +82,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 		setForm({
 			...form,
 			cantidadPagada: value,
-			cambio: value - form.costoTotal,
+			cambio: (value - form.costoTotal).toFixed(2),
 		});
 	};
 
@@ -102,7 +102,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 				folio: form.folio,
 				costoTotal: form.costoTotal,
 				cantidadPagada: form.cantidadPagada,
-				cambio: form.cantidadPagada - form.costoTotal,
+				cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
 				observaciones: form.observaciones,
 				fecha: form.fecha,
 				estado: form.estado,
@@ -121,7 +121,7 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 				folio: form.folio,
 				costoTotal: form.costoTotal,
 				cantidadPagada: form.cantidadPagada,
-				cambio: form.cantidadPagada - form.costoTotal,
+				cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
 				observaciones: form.observaciones,
 				fecha: form.fecha,
 				estado: form.estado,
