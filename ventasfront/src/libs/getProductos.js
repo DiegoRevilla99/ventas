@@ -1,6 +1,13 @@
 export const getProductos = async () => {
-	const url = "https://compras-develop.herokuapp.com/api/compras/";
-	const resp = await fetch(url);
+	const url = "https://compras-testing.herokuapp.com/api/compras/";
+	const resp = await fetch(url, {
+		method: "GET",
+		headers: {
+			Authorization: localStorage.getItem("token"),
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+	});
 	const { data } = await resp.json();
 
 	console.log("data Normal: ", data);

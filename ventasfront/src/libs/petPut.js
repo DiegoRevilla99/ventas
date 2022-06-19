@@ -6,6 +6,7 @@ export const petPut = async (url, payload) => {
 		credentials: "same-origin", // include, *same-origin, omit
 		headers: {
 			"Content-Type": "application/json",
+			Authorization: localStorage.getItem("token"),
 			// 'Content-Type': 'application/x-www-form-urlencoded',
 		},
 		redirect: "follow", // manual, *follow, error

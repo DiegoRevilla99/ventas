@@ -1,6 +1,13 @@
 export const getClientes = async () => {
 	const url = "https://client-development.herokuapp.com/api/cliente/";
-	const resp = await fetch(url);
+	const resp = await fetch(url, {
+		method: "GET",
+		headers: {
+			Authorization: localStorage.getItem("token"),
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+	});
 	const { data } = await resp.json();
 
 	console.log("CLIENTES Normal: ", data);

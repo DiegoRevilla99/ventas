@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { AsideContainer } from "./components/AsideContainer";
 import { Modal } from "./components/Modal";
 import { Navbar } from "./components/Navbar";
@@ -7,6 +7,8 @@ import { useFetch } from "./hooks/useFecth";
 import { getVentas } from "./libs/getVentas";
 import { ventasReducer } from "./reducers/ventasReducer";
 import "./App.css";
+import { obtenerToken } from "./libs/obtenerToken";
+import { verificarToken } from "./libs/verificarToken";
 
 const init = () => {
 	return [];
@@ -15,7 +17,7 @@ const init = () => {
 function App() {
 	const [ventas, dispatch] = useReducer(ventasReducer, [], init);
 	const { data, loading } = useFetch(getVentas);
-	console.log(ventas);
+
 	const detalles = [];
 
 	useEffect(() => {
@@ -26,6 +28,48 @@ function App() {
 			});
 		}
 	}, [loading]);
+
+	// useEffect(() => {
+	// 	const token1 = obtenerToken();
+	// 	token1
+	// 		.then((exitoToken) => {
+	// 			console.log("TOKEEEEEN", exitoToken);
+	// 			setToken(exitoToken.data);
+	// 			localStorage.setItem("token", JSON.stringify(exitoToken.data));
+	// 		})
+	// 		.catch((falloToken) =>
+	// 			console.log("FALLO LA OBTENCIÓN DEL TOKEN", falloToken)
+	// 		);
+	// }, [token]);
+
+	useEffect(() => {
+		const verificado = verificarToken(localStorage.getItem("token"));
+		verificado
+			.then((exitoVer) => {
+				console.log("ESTADO DEL TOKEN", exitoVer);
+				if (exitoVer.httpCode != 200) {
+					console.log(
+						"SE VA A OBTENER UN NUEVO TOKEN PORQUE EL ANTERIOR CADUCÓ"
+					);
+					const token1 = obtenerToken();
+					token1
+						.then((exitoToken) => {
+							localStorage.setItem("token", exitoToken.data);
+							console.log(
+								"TOKEN PUESTO EN EL LOCAL",
+								localStorage.getItem("token")
+							);
+						})
+						.catch((falloToken) =>
+							console.log("FALLO LA OBTENCIÓN DEL TOKEN", falloToken)
+						);
+				}
+				console.log("EL TOKEN SIGUE SIENDO EL MISMO");
+			})
+			.catch((falloVer) => {
+				console.log("EL TOKEN TA CADUCÓ", falloVer);
+			});
+	}, []);
 
 	return (
 		<div className="App">
