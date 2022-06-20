@@ -10,6 +10,8 @@ import { getDetalles } from "../libs/getDetalles";
 import { getClientes } from "../libs/getClientes";
 import { getValue } from "@testing-library/user-event/dist/utils";
 
+import "../App.css";
+
 let date = new Date();
 let seVende = true;
 const init = () => {
@@ -485,12 +487,12 @@ export const CreateForm = React.memo(({ dispatch }) => {
 	return (
 		<>
 			<div className="modal-body row">
-				<div className="col-md-8 border bg-light" style={{ height: "auto" }}>
+				<div className="col-md-8 border bg-light">
 					<button onClick={estadoo}></button>
 					<div className="row">
-						<div className="col-12 h-50 table-responsive">
+						<div className="col-12 table-responsive">
 							<h3>Productos</h3>
-							<table className="table border table-striped">
+							<table className="table border table-hover table-fixed">
 								<thead>
 									<tr>
 										<th scope="col">id</th>
@@ -530,7 +532,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 
 						<div className="col-12 h-50 mt-4 table-responsive">
 							<h3>Carrito</h3>
-							<table className="table border">
+							<table className="table border table-fixed">
 								<thead>
 									<tr>
 										<th scope="col">id</th>
