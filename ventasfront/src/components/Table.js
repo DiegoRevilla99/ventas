@@ -60,9 +60,9 @@ export const Table = React.memo(({ ventas, loading, dispatch, detalles }) => {
 	};
 
 	return (
-		<div className="container mb-4 border bg-white table-responsive">
+		<div className="container mb-4 border bg-light table-responsive">
 			<table className="table align-middle table-striped">
-				<thead>
+				<thead className="table-dark">
 					<tr>
 						<th scope="col">Id</th>
 						<th scope="col">Cliente</th>

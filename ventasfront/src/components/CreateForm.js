@@ -493,7 +493,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						<div className="col-12 table-responsive">
 							<h3>Productos</h3>
 							<table className="table border table-hover table-fixed">
-								<thead>
+								<thead className="table-primary bg-opacity-10 bg-primary">
 									<tr>
 										<th scope="col">id</th>
 										<th scope="col">Marca</th>
@@ -533,7 +533,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 						<div className="col-12 h-50 mt-4 table-responsive">
 							<h3>Carrito</h3>
 							<table className="table border table-fixed">
-								<thead>
+								<thead className="table-success bg-opacity-10 bg-success">
 									<tr>
 										<th scope="col">id</th>
 										<th scope="col">Marca</th>
