@@ -70,7 +70,7 @@ export const ventasReducer = (state = [], action) => {
 				return estado;
 			});
 
-			petDelete("https://ventas-it-d.herokuapp.com/api/venta/" + eliminado.id);
+			petDelete("https://venta-it.herokuapp.com/api/venta/" + eliminado.id);
 			console.log("NUEVO: ", nuevo);
 			return nuevo;
 

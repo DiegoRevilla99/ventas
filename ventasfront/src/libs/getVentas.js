@@ -1,5 +1,5 @@
 export const getVentas = async () => {
-	const url = "https://ventas-it-d.herokuapp.com/api/venta";
+	const url = "https://venta-it.herokuapp.com/api/venta";
 	const resp = await fetch(url, {
 		method: "GET",
 		headers: {

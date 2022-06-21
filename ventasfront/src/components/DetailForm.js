@@ -4,7 +4,7 @@ import { getDetalles } from "../libs/getDetalles";
 import { getProductos } from "../libs/getProductos";
 import { detallesReducer } from "../reducers/detallesReducer";
 import { productosDetallesReducer } from "../reducers/productosDetallesReducer";
-
+import "../detalles.css";
 const init = () => {
 	return [];
 };
@@ -92,7 +92,14 @@ export const DetailForm = React.memo(({ ventas, dispatch }) => {
 									}`}
 									key={detalle.id + productoE.idProducto + i}
 								>
-									<div className="col-6">
+									<img
+										src={
+											"https://media.istockphoto.com/photos/blue-sneakers-isolated-on-white-background-picture-id1308274455?b=1&k=20&m=1308274455&s=170667a&w=0&h=S3UYmEJ1hUri2rB8jRhJ4wNY31lMrHysLHbl9YD8j_Q="
+										}
+										className="img-thumbnail col-4"
+										alt={i}
+									></img>
+									<div className="col-4 mt-4">
 										<h4>Detalle: {detalle.id}</h4>
 										<h4>Cantidad: {detalle.cantidadProducto}</h4>
 										<h4>Costo por pieza: {detalle.costoUnitario}</h4>
@@ -100,9 +107,9 @@ export const DetailForm = React.memo(({ ventas, dispatch }) => {
 										<h4>Id del producto: {detalle.idProducto}</h4>
 									</div>
 
-									<div className="col-6">
-										<h4>Marca: {productoE.marca}</h4>
-										<h4>Modelo: {productoE.modelo}</h4>
+									<div className="col-4 mt-4">
+										<h4>Marca: {productoE?.marca?.nombreMarca}</h4>
+										<h4>Modelo: {productoE?.modelo?.nombreModelo}</h4>
 										<h4>Talla: {productoE.talla}</h4>
 										<h4>Color: {productoE.color}</h4>
 									</div>

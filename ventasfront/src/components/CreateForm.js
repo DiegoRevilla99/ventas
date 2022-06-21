@@ -267,7 +267,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 		// 	}
 		// });
 
-		const resp = petPost("https://ventas-it-d.herokuapp.com/api/venta", {
+		const resp = petPost("https://venta-it.herokuapp.com/api/venta", {
 			//folio: form.folio,
 			costoTotal: form.costoTotal,
 			cantidadPagada: form.cantidadPagada,
@@ -311,7 +311,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 					stateProductos.map((producto) => {
 						if (producto.seleccionado == true) {
 							const resp = petPut(
-								"https://compras-testing.herokuapp.com/api/compras/vender/" +
+								"https://compras-deploy.herokuapp.com/api/v1/productos/vender/" +
 									producto.idProducto +
 									"/" +
 									producto.cantidadVendidos,
@@ -328,7 +328,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 									});
 
 									const pago = petPost(
-										"https://payment-tester.herokuapp.com/api/payment/pay",
+										"https://payment-d.herokuapp.com/api/payment/pay",
 										{
 											saleID: id,
 											paymentAmount: form.costoTotal,
@@ -341,7 +341,7 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										.catch(() => console.log("NO SE PUDO REALIZAR EL PAGO"));
 
 									const detalle = petPost(
-										"https://ventas-it-d.herokuapp.com/api/venta/" +
+										"https://venta-it.herokuapp.com/api/venta/" +
 											id +
 											"/ventadetalle",
 										{
@@ -509,8 +509,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										producto.stock == 0 ? null : (
 											<tr key={producto.idProducto || 0}>
 												<th>{producto.idProducto}</th>
-												<th>{producto.marca}</th>
-												<th>{producto.modelo}</th>
+												<th>{producto.marca.nombreMarca}</th>
+												<th>{producto.modelo.nombreModelo}</th>
 												<th>{producto.talla}</th>
 												<th>{producto.precioVenta}</th>
 												<th>{producto.stock}</th>
@@ -549,8 +549,8 @@ export const CreateForm = React.memo(({ dispatch }) => {
 										producto.seleccionado == true ? (
 											<tr key={producto.idProducto || 0}>
 												<th>{producto.idProducto}</th>
-												<th>{producto.marca}</th>
-												<th>{producto.modelo}</th>
+												<th>{producto.marca.nombreMarca}</th>
+												<th>{producto.modelo.nombreModelo}</th>
 												<th>{producto.talla}</th>
 												<th>{producto.precioVenta}</th>
 												<th>{producto.stock}</th>
@@ -756,7 +756,10 @@ export const CreateForm = React.memo(({ dispatch }) => {
 				>
 					Cancelar
 				</button>
-				{form.cambio >= 0 && form.costoTotal > 0 && seVende ? (
+				{form.cambio >= 0 &&
+				form.costoTotal > 0 &&
+				seVende &&
+				form.rfc != "XXXX" ? (
 					<button
 						type="button"
 						className="btn btn-primary"

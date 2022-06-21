@@ -1,6 +1,6 @@
 export const obtenerToken = async () => {
 	const response = await fetch(
-		"https://autenticacion-t.herokuapp.com/login/auth/user",
+		"https://autenticacion-p.herokuapp.com/login/auth/user",
 		{
 			method: "POST",
 			headers: {

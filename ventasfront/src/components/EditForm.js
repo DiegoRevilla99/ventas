@@ -95,22 +95,19 @@ export const EditForm = React.memo(({ dispatch, ventas }) => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		const resp = petPut(
-			"https://ventas-it-d.herokuapp.com/api/venta/" + form.id,
-			{
-				id: form.id,
-				folio: form.folio,
-				costoTotal: form.costoTotal,
-				cantidadPagada: form.cantidadPagada,
-				cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
-				observaciones: form.observaciones,
-				fecha: form.fecha,
-				estado: form.estado,
-				statusDelete: form.statusDelete,
-				rfc: form.rfc,
-				idFactura: form.idFactura,
-			}
-		);
+		const resp = petPut("https://venta-it.herokuapp.com/api/venta/" + form.id, {
+			id: form.id,
+			folio: form.folio,
+			costoTotal: form.costoTotal,
+			cantidadPagada: form.cantidadPagada,
+			cambio: (form.cantidadPagada - form.costoTotal).toFixed(2),
+			observaciones: form.observaciones,
+			fecha: form.fecha,
+			estado: form.estado,
+			statusDelete: form.statusDelete,
+			rfc: form.rfc,
+			idFactura: form.idFactura,
+		});
 
 		console.log("FINAL: ", form);
 

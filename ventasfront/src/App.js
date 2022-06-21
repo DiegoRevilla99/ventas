@@ -43,7 +43,7 @@ function App() {
 	// }, [token]);
 
 	useEffect(() => {
-		const verificado = verificarToken(localStorage.getItem("token"));
+		const verificado = verificarToken(localStorage.getItem("token") || "none");
 		verificado
 			.then((exitoVer) => {
 				console.log("ESTADO DEL TOKEN", exitoVer);

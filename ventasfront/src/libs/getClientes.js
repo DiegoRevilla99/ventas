@@ -1,5 +1,5 @@
 export const getClientes = async () => {
-	const url = "https://client-development.herokuapp.com/api/cliente/";
+	const url = "https://client-app-d.herokuapp.com/api/cliente/";
 	const resp = await fetch(url, {
 		method: "GET",
 		headers: {

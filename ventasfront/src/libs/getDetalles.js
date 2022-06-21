@@ -1,6 +1,6 @@
 export const getDetalles = async (idVenta) => {
 	const url =
-		"https://ventas-it-d.herokuapp.com/api/venta/" + idVenta + "/ventadetalle";
+		"https://venta-it.herokuapp.com/api/venta/" + idVenta + "/ventadetalle";
 	const resp = await fetch(url, {
 		method: "GET",
 		headers: {
